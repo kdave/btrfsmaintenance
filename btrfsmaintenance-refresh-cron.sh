@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# Copyright (c) 2014 SuSE Linux AG, Nuernberg, Germany.
+#
+# please send bugfixes or comments to http://www.suse.de/feedback.
+
+# Adjust symlinks of btrfs maintenance services according to the configs.
+# Run with 'uninstall' to remove them again
+
+#
+# paranoia settings
+#
+umask 022
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export PATH
+
+SCRIPTS=/usr/share/btrfsmaintenance
+
+if [ "$1" = 'uninstall' ]; then
+	for SCRIPT in btrfs-scrub.sh btrfs-defrag.sh btrfs-balance.sh btrfs-trim.sh; do
+		for PERIOD in daily weekly monthly; do
+			FILE="/etc/cron.$PERIOD/$SCRIPT"
+			echo rm -f "$FILE"
+			rm -f "$FILE"
+		done
+	done
+	exit 0
+fi
+
+if [ -f /etc/sysconfig/btrfsmaintenance ]; then
+    . /etc/sysconfig/btrfsmaintenance
+fi
+
+function refresh_period() {
+	EXPECTED="$1"
+	SCRIPT="$2"
+	echo "Refresh script $SCRIPT for $EXPECTED"
+
+	for PERIOD in daily weekly monthly; do
+		FILE="/etc/cron.$PERIOD/$SCRIPT"
+		if [ "$PERIOD" = "$EXPECTED" ]; then
+			echo ln -sf "$SCRIPTS/$SCRIPT" "$FILE"
+			ln -sf "$SCRIPTS/$SCRIPT" "$FILE"
+		else
+			echo rm -f "$FILE"
+			rm -f "$FILE"
+		fi
+	done
+}
+
+refresh_period "$BTRFS_SCRUB_PERIOD" btrfs-scrub.sh
+refresh_period "$BTRFS_DEFRAG_PERIOD" btrfs-defrag.sh
+refresh_period "$BTRFS_BALANCE_PERIOD" btrfs-balance.sh
+refresh_period "$BTRFS_TRIM_PERIOD" btrfs-trim.sh

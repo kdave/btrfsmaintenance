@@ -1,0 +1,104 @@
+## Path: System/btrfsmaintenance
+## Type:        string
+## Default:     ""
+#
+# Run periodic defrag on selected paths.
+# (Colon separated paths)
+BTRFS_DEFRAG_PATHS=""
+
+## Path:           System/btrfsmaintenance
+## Type:           string(none,daily,weekly,monthly)
+## Default:        "none"
+## ServiceRestart: btrfsmaintenance-refresh
+#
+# Frequency of defrag.
+BTRFS_DEFRAG_PERIOD="none"
+
+## Path:        System/btrfsmaintenance
+## Type:        string
+## Default:     "+1m"
+#
+# Minimal file size to consider for defragmentation
+BTRFS_DEFRAG_MIN_SIZE="+1m"
+
+## Path:        System/btrfsmaintenance
+## Type:        string
+## Default:     "/"
+#
+# Which mountpoints/filesystems to balance periodically. This may reclaim unused
+# portions of the filesystem and make the rest more compact.
+# (Colon separated paths)
+BTRFS_BALANCE_MOUNTPOINTS="/"
+
+## Path:           System/btrfsmaintenance
+## Type:           string(none,daily,weekly,monthly)
+## Default:        "weekly"
+## ServiceRestart: btrfsmaintenance-refresh
+#
+# Frequency of periodic balance.
+BTRFS_BALANCE_PERIOD="weekly"
+
+## Path:        System/btrfsmaintenance
+## Type:        string
+## Default:     "1 5 10 20 30 40 50"
+#
+# The usage percent for balancing data block groups.
+# Caveat: the higher the longer it will need
+BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"
+
+## Path:        System/btrfsmaintenance
+## Type:        string
+## Default:     "1 5 10 20 30"
+#
+# The usage percent for balancing metadata block groups.
+# Caveat: the higher the longer it will need
+BTRFS_BALANCE_MUSAGE="1 5 10 20 30"
+
+## Path:        System/btrfsmaintenance
+## Type:        string
+## Default:     "/"
+#
+# Which mountpoints/filesystems to scrub periodically.
+# (Colon separated paths)
+BTRFS_SCRUB_MOUNTPOINTS="/"
+
+## Path:        System/btrfsmaintenance
+## Type:        string(none,weekly,monthly)
+## Default:     "monthly"
+## ServiceRestart: btrfsmaintenance-refresh
+#
+# Frequency of scrub.
+BTRFS_SCRUB_PERIOD="monthly"
+
+## Path:        System/btrfsmaintenance
+## Type:        string(idle,normal)
+## Default:     "idle"
+#
+# Priority of IO at which the scrub process will run. Idle sholud not degrade
+# performance but may take long to finish.
+BTRFS_SCRUB_PRIORITY="idle"
+
+## Path:        System/btrfsmaintenance
+## Type:        boolean
+## Default:     "false"
+#
+# Do read-only scrub and don't try to repair anything.
+BTRFS_SCRUB_READ_ONLY="false"
+
+## Path:           System/Filesystems
+## Description:    Configuration for periodic fstrim
+## Type:           string(none,daily,weekly,monthly)
+## Default:        "weekly"
+## ServiceRestart: btrfsmaintenance-refresh
+#
+# Frequency of periodic 
+BTRFS_TRIM_PERIOD="weekly"
+
+## Path:        System/Filesystems
+## Description: Configuration for periodic fstrim - mountpoints
+## Type:        string
+## Default:     "/"
+#
+# Which mountpoints/filesystems to trim periodically.
+# (Colon separated paths)
+BTRFS_TRIM_MOUNTPOINTS="/"
