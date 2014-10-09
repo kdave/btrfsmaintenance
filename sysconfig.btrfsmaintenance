@@ -1,4 +1,4 @@
-## Path: System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     ""
 #
@@ -6,7 +6,7 @@
 # (Colon separated paths)
 BTRFS_DEFRAG_PATHS=""
 
-## Path:           System/btrfsmaintenance
+## Path:           System/File systems/btrfs
 ## Type:           string(none,daily,weekly,monthly)
 ## Default:        "none"
 ## ServiceRestart: btrfsmaintenance-refresh
@@ -14,14 +14,14 @@ BTRFS_DEFRAG_PATHS=""
 # Frequency of defrag.
 BTRFS_DEFRAG_PERIOD="none"
 
-## Path:        System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     "+1m"
 #
 # Minimal file size to consider for defragmentation
 BTRFS_DEFRAG_MIN_SIZE="+1m"
 
-## Path:        System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     "/"
 #
@@ -30,7 +30,7 @@ BTRFS_DEFRAG_MIN_SIZE="+1m"
 # (Colon separated paths)
 BTRFS_BALANCE_MOUNTPOINTS="/"
 
-## Path:           System/btrfsmaintenance
+## Path:           System/File systems/btrfs
 ## Type:           string(none,daily,weekly,monthly)
 ## Default:        "weekly"
 ## ServiceRestart: btrfsmaintenance-refresh
@@ -38,7 +38,7 @@ BTRFS_BALANCE_MOUNTPOINTS="/"
 # Frequency of periodic balance.
 BTRFS_BALANCE_PERIOD="weekly"
 
-## Path:        System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     "1 5 10 20 30 40 50"
 #
@@ -46,7 +46,7 @@ BTRFS_BALANCE_PERIOD="weekly"
 # Caveat: the higher the longer it will need
 BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"
 
-## Path:        System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     "1 5 10 20 30"
 #
@@ -54,7 +54,7 @@ BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"
 # Caveat: the higher the longer it will need
 BTRFS_BALANCE_MUSAGE="1 5 10 20 30"
 
-## Path:        System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     "/"
 #
@@ -62,7 +62,7 @@ BTRFS_BALANCE_MUSAGE="1 5 10 20 30"
 # (Colon separated paths)
 BTRFS_SCRUB_MOUNTPOINTS="/"
 
-## Path:        System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        string(none,weekly,monthly)
 ## Default:     "monthly"
 ## ServiceRestart: btrfsmaintenance-refresh
@@ -70,7 +70,7 @@ BTRFS_SCRUB_MOUNTPOINTS="/"
 # Frequency of scrub.
 BTRFS_SCRUB_PERIOD="monthly"
 
-## Path:        System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        string(idle,normal)
 ## Default:     "idle"
 #
@@ -78,14 +78,14 @@ BTRFS_SCRUB_PERIOD="monthly"
 # performance but may take long to finish.
 BTRFS_SCRUB_PRIORITY="idle"
 
-## Path:        System/btrfsmaintenance
+## Path:        System/File systems/btrfs
 ## Type:        boolean
 ## Default:     "false"
 #
 # Do read-only scrub and don't try to repair anything.
 BTRFS_SCRUB_READ_ONLY="false"
 
-## Path:           System/Filesystems
+## Path:           System/File systems/btrfs
 ## Description:    Configuration for periodic fstrim
 ## Type:           string(none,daily,weekly,monthly)
 ## Default:        "weekly"
@@ -94,7 +94,7 @@ BTRFS_SCRUB_READ_ONLY="false"
 # Frequency of periodic 
 BTRFS_TRIM_PERIOD="weekly"
 
-## Path:        System/Filesystems
+## Path:        System/File systems/btrfs
 ## Description: Configuration for periodic fstrim - mountpoints
 ## Type:        string
 ## Default:     "/"
