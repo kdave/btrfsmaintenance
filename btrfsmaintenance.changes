@@ -1,0 +1,16 @@
+-------------------------------------------------------------------
+Thu Oct  9 18:33:44 CEST 2014 - dsterba@suse.cz
+
+- clean spec
+- add Url tag
+
+-------------------------------------------------------------------
+Thu Oct  9 16:47:46 CEST 2014 - dsterba@suse.cz
+
+- fix sysconfig file Path: tags
+
+-------------------------------------------------------------------
+Wed Sep 24 13:17:22 CEST 2014 - dsterba@suse.cz
+
+- initial import 0.1
+
