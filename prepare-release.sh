@@ -12,6 +12,7 @@ cp *.service $tardir
 cp *.template $tardir
 cp sysconfig.* $tardir
 cp COPYING $tardir
+cp README.* $tardir
 rm $tardir/$(basename $0)
 
 tar cvjf "$tardir".tar.bz2 "$tardir"
