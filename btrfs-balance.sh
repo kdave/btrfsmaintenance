@@ -15,6 +15,9 @@ if [ -f /etc/sysconfig/btrfsmaintenance ] ; then
 	. /etc/sysconfig/btrfsmaintenance
 fi
 
+LOGIDENTIFIER='btrfs-balance'
+
+{
 OIFS="$IFS"
 IFS=:
 for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
@@ -40,5 +43,12 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	btrfs filesystem df "$MM"
 	df -H "$MM"
 done
+
+} | \
+case "$BTRFS_LOG_OUTPUT" in
+	stdout) cat;;
+	jounral) sytemd-cat -t "$LOGIDENTIFIER";;
+	*) cat;;
+esac
 
 exit 0

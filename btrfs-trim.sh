@@ -15,6 +15,9 @@ if [ -f /etc/sysconfig/btrfsmaintenance ] ; then
     . /etc/sysconfig/btrfsmaintenance
 fi
 
+LOGIDENTIFIER='btrfs-trim'
+
+{
 OIFS="$IFS"
 IFS=:
 for MNT in $BTRFS_TRIM_MOUNTPOINTS; do
@@ -26,5 +29,12 @@ for MNT in $BTRFS_TRIM_MOUNTPOINTS; do
 	echo "Running fstrim on $MNT"
 	/usr/sbin/fstrim "$MNT"
 done
+
+} | \
+case "$BTRFS_LOG_OUTPUT" in
+	stdout) cat;;
+	jounral) sytemd-cat -t "$LOGIDENTIFIER";;
+	*) cat;;
+esac
 
 exit 0

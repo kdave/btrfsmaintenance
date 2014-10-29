@@ -15,6 +15,9 @@ if [ -f /etc/sysconfig/btrfsmaintenance ] ; then
     . /etc/sysconfig/btrfsmaintenance
 fi
 
+LOGIDENTIFIER='btrfs-defrag'
+
+{
 OIFS="$IFS"
 IFS=:
 for P in $BTRFS_DEFRAG_PATHS; do
@@ -26,5 +29,12 @@ for P in $BTRFS_DEFRAG_PATHS; do
 	find "$P" -size "$BTRFS_DEFRAG_MIN_SIZE" -type f -xdev \
 		-exec /sbin/btrfs filesystem defrag -t 32m -f "$BTRFS_VERBOSITY" '{}' \;
 done
+
+} | \
+case "$BTRFS_LOG_OUTPUT" in
+	stdout) cat;;
+	jounral) sytemd-cat -t "$LOGIDENTIFIER";;
+	*) cat;;
+esac
 
 exit 0

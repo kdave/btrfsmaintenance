@@ -15,6 +15,8 @@ if [ -f /etc/sysconfig/btrfsmaintenance ] ; then
     . /etc/sysconfig/btrfsmaintenance
 fi
 
+LOGIDENTIFIER='btrfs-scrub'
+
 readonly=
 if [ "$BTRFS_SCRUB_READ_ONLY" = "true" ]; then
 	readonly=-r
@@ -26,6 +28,7 @@ if [ "$BTRFS_SCRUB_PRIORITY" = "normal" ]; then
 	ioprio="-c 2 -n 4"
 fi
 
+{
 OIFS="$IFS"
 IFS=:
 for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
@@ -41,5 +44,12 @@ for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 		exit 1
 	fi
 done
+
+} | \
+case "$BTRFS_LOG_OUTPUT" in
+	stdout) cat;;
+	jounral) sytemd-cat -t "$LOGIDENTIFIER";;
+	*) cat;;
+esac
 
 exit 0

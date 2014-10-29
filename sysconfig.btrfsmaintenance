@@ -1,4 +1,12 @@
 ## Path:        System/File systems/btrfs
+## Type:        string(none,stdout,journal)
+## Default:     "stdout"
+#
+# Output target for messages. Journal messages are tagged by the task name like
+# 'btrfs-scrub' etc.
+BTRFS_LOG_OUTPUT="stdout"
+
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     ""
 #
