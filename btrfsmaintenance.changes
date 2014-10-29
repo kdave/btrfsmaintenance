@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Oct 29 00:00:00 CET 2014 - dsterba@suse.cz
+
+- add COPYING, README.md
+- add config option to specify log target (stdout, or journal)
+
+-------------------------------------------------------------------
 Thu Oct  9 18:33:44 CEST 2014 - dsterba@suse.cz
 
 - clean spec
