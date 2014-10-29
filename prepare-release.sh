@@ -11,6 +11,7 @@ cp *.sh $tardir
 cp *.service $tardir
 cp *.template $tardir
 cp sysconfig.* $tardir
+cp COPYING $tardir
 rm $tardir/$(basename $0)
 
 tar cvjf "$tardir".tar.bz2 "$tardir"

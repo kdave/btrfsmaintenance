@@ -98,6 +98,7 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_localstatedir}/adm/f
 
 %files
 %defattr(-,root,root)
+%doc COPYING
 %{_localstatedir}/adm/fillup-templates/sysconfig.btrfsmaintenance
 %dir /usr/share/%{name}
 /usr/share/%{name}/*
