@@ -22,17 +22,18 @@ Release:        0
 Summary:        Scripts for btrfs periodic maintenance tasks
 License:        GPL-2.0
 Group:          System/Base
+Url:            https://github.com/kdave/btrfsmaintenance
 Source0:        %{name}-%{version}.tar.bz2
+Requires:       zypp-plugin-python
+Requires:       libzypp(plugin:commit)
+Recommends:     cron
+Supplements:    btrfsprogs
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildArch:      noarch
-Recommends:     cron
-Requires:       zypp-plugin-python
-Requires:       libzypp(plugin:commit) = 1
+%{?systemd_requires}
 %if 0%{?suse_version} >= 1210
 BuildRequires:  systemd
 %endif
-%{?systemd_requires}
-Supplements:    btrfsprogs
 
 %description
 Scripts for btrfs maintenance tasks like periodic scrub, balance, trim or defrag
@@ -49,22 +50,22 @@ mkdir -p %{buildroot}%{_sysconfdir}/cron.daily/
 mkdir -p %{buildroot}%{_sysconfdir}/cron.weekly/
 mkdir -p %{buildroot}%{_sysconfdir}/cron.monthly/
 
-install -m 755 -d %{buildroot}/usr/share/%{name}
-install -m 755 btrfs-defrag.sh %{buildroot}/usr/share/%{name}
-install -m 755 btrfs-balance.sh %{buildroot}/usr/share/%{name}
-install -m 755 btrfs-scrub.sh %{buildroot}/usr/share/%{name}
-install -m 755 btrfs-trim.sh %{buildroot}/usr/share/%{name}
-install -m 755 btrfsmaintenance-refresh-cron.sh %{buildroot}/usr/share/%{name}
+install -m 755 -d %{buildroot}%{_datadir}/%{name}
+install -m 755 btrfs-defrag.sh %{buildroot}%{_datadir}/%{name}
+install -m 755 btrfs-balance.sh %{buildroot}%{_datadir}/%{name}
+install -m 755 btrfs-scrub.sh %{buildroot}%{_datadir}/%{name}
+install -m 755 btrfs-trim.sh %{buildroot}%{_datadir}/%{name}
+install -m 755 btrfsmaintenance-refresh-cron.sh %{buildroot}%{_datadir}/%{name}
 
 %if 0%{?suse_version} >= 1210
 install -m 755 -d %{buildroot}%{_unitdir}
 install -m 644 -D btrfsmaintenance-refresh.service %{buildroot}%{_unitdir}
 install -m 755 -d %{buildroot}%{_sbindir}
-ln -s /usr/sbin/service %{buildroot}%{_sbindir}/rcbtrfsmaintenance-refresh
+ln -s %{_sbindir}/service %{buildroot}%{_sbindir}/rcbtrfsmaintenance-refresh
 %else
 # just a hack, but sufficient
-install -m 755 -d %{buildroot}/etc/cron.hourly
-ln -s /usr/share/%{name}/btrfsmaintenance-refresh-cron.sh %{buildroot}/etc/cron.hourly/
+install -m 755 -d %{buildroot}%{_sysconfdir}/cron.hourly
+ln -s %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh %{buildroot}%{_sysconfdir}/cron.hourly/
 %endif
 
 install -m 755 -d %{buildroot}/usr/lib/zypp/plugins/commit
@@ -80,28 +81,30 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_localstatedir}/adm/f
 %endif
 
 %if 0%{?suse_version} >= 1210
+
 %pre
 %service_add_pre btrfsmaintenance-refresh.service
 
 %preun
 %service_del_preun btrfsmaintenance-refresh.service
-/usr/share/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
+%{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
 
 %postun
 %service_del_postun btrfsmaintenance-refresh.service
 %endif
 
 %if 0%{?suse_version} < 1210
+
 %preun
-/usr/share/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
+%{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
 %endif
 
 %files
 %defattr(-,root,root)
 %doc COPYING README.md
 %{_localstatedir}/adm/fillup-templates/sysconfig.btrfsmaintenance
-%dir /usr/share/%{name}
-/usr/share/%{name}/*
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/*
 %dir /usr/lib/zypp/
 %dir /usr/lib/zypp/plugins
 %dir /usr/lib/zypp/plugins/commit
@@ -111,7 +114,7 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_localstatedir}/adm/f
 %{_unitdir}/btrfsmaintenance-refresh.service
 %{_sbindir}/rcbtrfsmaintenance-refresh
 %else
-/etc/cron.hourly/btrfsmaintenance-refresh-cron.sh
+%{_sysconfdir}/cron.hourly/btrfsmaintenance-refresh-cron.sh
 %endif
 
 %changelog
