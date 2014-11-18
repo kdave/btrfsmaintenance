@@ -31,7 +31,7 @@ if [ -f /etc/sysconfig/btrfsmaintenance ]; then
     . /etc/sysconfig/btrfsmaintenance
 fi
 
-function refresh_period() {
+refresh_period() {
 	EXPECTED="$1"
 	SCRIPT="$2"
 	echo "Refresh script $SCRIPT for $EXPECTED"
