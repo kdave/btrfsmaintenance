@@ -79,6 +79,7 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_localstatedir}/adm/f
 %if 0%{?suse_version} >= 1210
 %service_add_post btrfsmaintenance-refresh.service
 %endif
+%{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh
 
 %if 0%{?suse_version} >= 1210
 
