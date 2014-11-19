@@ -20,7 +20,6 @@ if [ "$1" = 'uninstall' ]; then
 	for SCRIPT in btrfs-scrub.sh btrfs-defrag.sh btrfs-balance.sh btrfs-trim.sh; do
 		for PERIOD in daily weekly monthly; do
 			FILE="/etc/cron.$PERIOD/$SCRIPT"
-			echo rm -f "$FILE"
 			rm -f "$FILE"
 		done
 	done
@@ -39,10 +38,8 @@ refresh_period() {
 	for PERIOD in daily weekly monthly; do
 		FILE="/etc/cron.$PERIOD/$SCRIPT"
 		if [ "$PERIOD" = "$EXPECTED" ]; then
-			echo ln -sf "$SCRIPTS/$SCRIPT" "$FILE"
 			ln -sf "$SCRIPTS/$SCRIPT" "$FILE"
 		else
-			echo rm -f "$FILE"
 			rm -f "$FILE"
 		fi
 	done
