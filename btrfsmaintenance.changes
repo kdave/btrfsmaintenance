@@ -1,4 +1,20 @@
 -------------------------------------------------------------------
+Wed Nov 19 00:00:00 CET 2014 - dsterba@suse.cz
+
+- cron refresh: remove bashism
+- cron refresh: remove debugging messages
+- post installation must create the cron links (bsc#904518)
+- Removed patches:
+  * btrfsmaintenance-0.1-fix-bashisms.patch
+
+-------------------------------------------------------------------
+Sat Nov 15 04:55:00 UTC 2014 - Led <ledest@gmail.com>
+
+- fix bashism in btrfsmaintenance-refresh-cron.sh script
+- add patches:
+  * btrfsmaintenance-0.1-fix-bashisms.patch
+
+-------------------------------------------------------------------
 Wed Oct 29 00:00:00 CET 2014 - dsterba@suse.cz
 
 - add COPYING, README.md
