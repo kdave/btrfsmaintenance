@@ -33,7 +33,7 @@ done
 } | \
 case "$BTRFS_LOG_OUTPUT" in
 	stdout) cat;;
-	jounral) sytemd-cat -t "$LOGIDENTIFIER";;
+	journal) sytemd-cat -t "$LOGIDENTIFIER";;
 	*) cat;;
 esac
 
