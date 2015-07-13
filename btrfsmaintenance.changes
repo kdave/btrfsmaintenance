@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Jul 13 00:00:00 CEST 2015 - dsterba@suse.com
+
+- version 0.1.1
+  - fix typo and make journal logging target work
+
+-------------------------------------------------------------------
 Wed Nov 19 00:00:00 CET 2014 - dsterba@suse.cz
 
 - cron refresh: remove bashism
