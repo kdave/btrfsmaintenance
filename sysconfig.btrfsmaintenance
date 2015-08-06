@@ -51,7 +51,10 @@ BTRFS_BALANCE_PERIOD="weekly"
 ## Default:     "1 5 10 20 30 40 50"
 #
 # The usage percent for balancing data block groups.
-# Caveat: the higher the longer it will need
+#
+# Note: default values should not disturb normal work but may not reclaim
+# enough block groups. If you observe that, add higher values but beware that
+# this will increase IO load on the system.
 BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"
 
 ## Path:        System/File systems/btrfs
@@ -59,7 +62,10 @@ BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"
 ## Default:     "1 5 10 20 30"
 #
 # The usage percent for balancing metadata block groups.
-# Caveat: the higher the longer it will need
+#
+# Note: default values should not disturb normal work but may not reclaim
+# enough block groups. If you observe that, add higher values but beware that
+# this will increase IO load on the system.
 BTRFS_BALANCE_MUSAGE="1 5 10 20 30"
 
 ## Path:        System/File systems/btrfs
@@ -75,15 +81,15 @@ BTRFS_SCRUB_MOUNTPOINTS="/"
 ## Default:     "monthly"
 ## ServiceRestart: btrfsmaintenance-refresh
 #
-# Frequency of scrub.
+# Frequency of periodic scrub.
 BTRFS_SCRUB_PERIOD="monthly"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string(idle,normal)
 ## Default:     "idle"
 #
-# Priority of IO at which the scrub process will run. Idle sholud not degrade
-# performance but may take long to finish.
+# Priority of IO at which the scrub process will run. Idle should not degrade
+# performance but may take longer to finish.
 BTRFS_SCRUB_PRIORITY="idle"
 
 ## Path:        System/File systems/btrfs
@@ -99,7 +105,7 @@ BTRFS_SCRUB_READ_ONLY="false"
 ## Default:        "weekly"
 ## ServiceRestart: btrfsmaintenance-refresh
 #
-# Frequency of periodic 
+# Frequency of periodic trim.
 BTRFS_TRIM_PERIOD="weekly"
 
 ## Path:        System/File systems/btrfs
