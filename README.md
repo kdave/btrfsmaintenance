@@ -101,6 +101,7 @@ __Tuning:__
 * the trim commands might not have an effect and are up to the device, eg. a
   block range too small or other constraints that may differ by device
   type/vendor/firmware
+* the default configuration is *off* because of the the system fstrim.timer
 
 ### defrag ###
 

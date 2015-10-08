@@ -102,11 +102,13 @@ BTRFS_SCRUB_READ_ONLY="false"
 ## Path:           System/File systems/btrfs
 ## Description:    Configuration for periodic fstrim
 ## Type:           string(none,daily,weekly,monthly)
-## Default:        "weekly"
+## Default:        "none"
 ## ServiceRestart: btrfsmaintenance-refresh
 #
-# Frequency of periodic trim.
-BTRFS_TRIM_PERIOD="weekly"
+# Frequency of periodic trim. Off by default so it does not collide with
+# fstrim.timer . If you do not use the timer, turn it on here. The recommended
+# period is 'weekly'.
+BTRFS_TRIM_PERIOD="none"
 
 ## Path:        System/File systems/btrfs
 ## Description: Configuration for periodic fstrim - mountpoints
