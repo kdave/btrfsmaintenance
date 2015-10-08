@@ -130,3 +130,10 @@ If the period is changed manually, the cron symlinks have to be refreshed, use
 `systemctl restart btrfsmaintenance-refresh` (or the
 `rcbtrfsmaintenance-refresh` shortcut). Changing the period via *yast2* sysconfig
 editor triggers the refresh automatically.
+
+
+## Quick start ##
+
+The tasks' periods and other parameters should fit most usecases and do not
+need to be touched. Review the mountpoints (variables ending with
+`_MOUNTPOINTS`) whether you want to run the tasks there or not.
