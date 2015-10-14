@@ -3,6 +3,7 @@ Thu Oct  8 00:00:00 CEST 2015 - dsterba@suse.cz
 
 - version
   - change default config for trim: off
+  - journal loggin should work (fixed a typo)
 
 -------------------------------------------------------------------
 Mon Jul 13 00:00:00 CEST 2015 - dsterba@suse.com
