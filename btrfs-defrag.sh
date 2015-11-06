@@ -30,7 +30,7 @@ for P in $BTRFS_DEFRAG_PATHS; do
 		echo "Path $P is not btrfs, skipping"
 		continue
 	fi
-	find "$P" -size "$BTRFS_DEFRAG_MIN_SIZE" -type f -xdev \
+	find "$P" -xdev -size "$BTRFS_DEFRAG_MIN_SIZE" -type f \
 		-exec btrfs filesystem defrag -t 32m -f $BTRFS_VERBOSITY '{}' \;
 done
 
