@@ -24,10 +24,10 @@ BTRFS_DEFRAG_PERIOD="none"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
-## Default:     "+1m"
+## Default:     "+1M"
 #
 # Minimal file size to consider for defragmentation
-BTRFS_DEFRAG_MIN_SIZE="+1m"
+BTRFS_DEFRAG_MIN_SIZE="+1M"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
