@@ -17,6 +17,20 @@ fi
 
 LOGIDENTIFIER='btrfs-balance'
 
+check_helper()
+{
+	TMPCHK=/tmp/check_balance_${RANDOM}_`date +%F`.log
+	touch $TMPCHK
+	btrfs balance start -h > $TMPCHK 2>&1
+	grep -q "only check if balance would make sense" $TMPCHK
+	if [ "$?" != "0" ]; then
+		echo "your balance doesn't not support --only-check"
+		rm -f $TMPCHK
+		exit 1
+	fi
+	rm -f $TMPCHK
+}
+
 {
 OIFS="$IFS"
 IFS=:
@@ -35,31 +49,35 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	df -H "$MM"
 
 	btrfs balance start -dusage=0 "$MM"
+
+	check_helper
+
 	# After remove empty data block groups, try only 10 times in case we
 	# have too much balance work
 	for i in `seq 1 $LOOP`; do
-		# '-c' option will print out a valid 'dvrange' if it finds
-		# something
-		# if no btrfs-debugfs, find btrfs-debugfs in progs directory
-		STRING=`btrfs-debugfs -b $MM | tail -1`
-		echo $STRING | grep "dvrange" -q
+		# btrfs balance start '-c' option will print out a valid
+		# 'dvrange' if it finds something
+		STRING=`btrfs balance start -c $MM | tail -1`
+		echo $STRING | grep -q "dvrange"
 		if [ $? -eq 0 ]; then
 			# for btrfs-debugfs, print $4, for btrfs-balance-start,
 			# print $5
-			VRANGE=`echo $STRING | awk -F ' ' '{print $4}'`
+			VRANGE=`echo $STRING | awk -F ' ' '{print $5}'`
 			echo "balance data block group: ($VRANGE)"
 			STRING=`btrfs balance start $VRANGE $MM | tail -1`
-			echo $STRING | grep "Done" -q
+			echo $STRING | grep -q "Done"
 			if [ $? -eq 0 ]; then
 				CHUNK_NUM=`echo $STRING | awk -F ' ' '{print $8}'`
 				if [ $LAST_CHUNK_NUM -eq 0 ]; then
 					LAST_CHUNK_NUM=${CHUNK_NUM}
 				elif [ $LAST_CHUNK_NUM -eq $CHUNK_NUM ]; then
+					echo "balance cannot reclaim space any more"
+					CONT_DATA_BALANCE=0
 					break
 				fi
 			fi
 		else
-			echo "balance will not work"
+			echo "balance cannot reclaim space any more"
 			CONT_DATA_BALANCE=0
 			break
 		fi
