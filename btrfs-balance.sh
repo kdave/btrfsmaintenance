@@ -12,7 +12,11 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export PATH
 
 if [ -f /etc/sysconfig/btrfsmaintenance ] ; then
-	. /etc/sysconfig/btrfsmaintenance
+    . /etc/sysconfig/btrfsmaintenance
+fi
+
+if [ -f /etc/default/btrfsmaintenance ] ; then
+    . /etc/default/btrfsmaintenance
 fi
 
 LOGIDENTIFIER='btrfs-balance'
