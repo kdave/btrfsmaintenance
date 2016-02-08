@@ -6,9 +6,8 @@ a few maintenance tasks. This means the *scrub*, *balance*, *trim* or
 *defragmentation*.
 
 Each of the tasks can be turned on/off and configured independently. The
-default config values were selected to fit the default installation profile of
-openSUSE 13.2 where the root filesystem is formatted to *btrfs*. Support for
-other distros is possible and patches are welcome.
+default config values were selected to fit the default installation profile
+with btrfs on the root filesystem.
 
 Overall tuning of the default values should give a good balance between effects
 of the tasks and low impact of other work on the system. If this does not fit
@@ -141,18 +140,18 @@ need to be touched. Review the mountpoints (variables ending with
 
 ## Distro integration ##
 
-Currently the support is tuned for SUSE distributions, but other distros can be
-added. This section describes how the pieces are put together and should give some
-overview but will differ from other distros.
+Currently the support for widely used distros is present.  More distros can be
+added. This section describes how the pieces are put together and should give
+some overview.
 
 ### Installation ###
 
 * `btrfs-*.sh` task scripts are expected at `/usr/share/btrfsmaintenance`
-* `sysconfig.btrfsmaintenance` configuration template is put to
-  `/etc/sysconfig/btrfsmaintenance` on RedHat based systems and to
-  `/etc/default/btrfsmaintenance` on Debian based systems.
+* `sysconfig.btrfsmaintenance` configuration template is put to:
+ * `/etc/sysconfig/btrfsmaintenance` on SUSE and RedHat based systems or derivatives
+ * `/etc/default/btrfsmaintenance` on Debian and derivatives
 * `/usr/lib/zypp/plugins/commit/btrfs-defrag-plugin.py` post-update script for
-  zypper (the package manager), applies to rpm-based distros now
+  zypper (the package manager), applies to SUSE-based distros for now
 * cron refresh scripts are installed (see bellow)
 
 ### cron jobs ###
@@ -173,20 +172,24 @@ fragmented, which particularly hurts on btrfs. For rpm-based distros this means 
 in `/var/lib/rpm`. The script or plugin simpy runs a defragmentation on the affected files.
 See `btrfs-defrag-plugin.py` for more details.
 
+At the moment the 'zypper' package manager plugin exists. As the package
+managers differ significantly, there's no single plugin/script to do that.
+
 ### Settings ###
 
 The settings are copied to the expected system location from the template
 (`sysconfig.btrfsmaintenance`). This is a shell script and can be sourced to obtain
 values of the variables.
 
-The template provided for openSUSE contains descriptions of the variables, default and
-possible values.
+The template contains descriptions of the variables, default and possible
+values and can be deployed without changes (expecting the root filesystem to be
+btrfs).
 
 ## About ##
 
 The goal of this project is to help administering btrfs filesystems. It is not
-supposed to be distribution specific but so far only SUSE distros are
-supported.
+supposed to be distribution specific. Common scripts/configs are preferred but
+per-distro exceptions will be added when necessary.
 
 Please open issues for bugs or feature requests.
 
