@@ -149,7 +149,8 @@ overview but will differ from other distros.
 
 * `btrfs-*.sh` task scripts are expected at `/usr/share/btrfsmaintenance`
 * `sysconfig.btrfsmaintenance` configuration template is put to
-  `/etc/sysconfig/btrfsmaintenance`
+  `/etc/sysconfig/btrfsmaintenance` on RedHat based systems and to
+  `/etc/default/btrfsmaintenance` on Debian based systems.
 * `/usr/lib/zypp/plugins/commit/btrfs-defrag-plugin.py` post-update script for
   zypper (the package manager), applies to rpm-based distros now
 * cron refresh scripts are installed (see bellow)
