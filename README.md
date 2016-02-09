@@ -201,4 +201,6 @@ requirements:
 * one logical change per patch (really simple changes can be grouped)
 * the `Signed-off-by` line is optional but desirable, see [Developer Certificate of Origin](http://developercertificate.org/)
 
+For non-github contributors: mail bug reports or patches are also accepted.
+
 License: [GPL 2](https://www.gnu.org/licenses/gpl-2.0.html)
