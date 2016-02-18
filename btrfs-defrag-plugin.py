@@ -58,13 +58,13 @@ class BtrfsDefragPlugin(Plugin):
         return
     if DEBUG:
         dbg('--- Fragmentation before')
-        dbg(qx('/usr/sbin/filefrag %s/*' % (PATH)))
-    ret = qx('/usr/sbin/btrfs filesystem defragment -v -f -r -t %s "%s"' % \
+        dbg(qx('filefrag %s/*' % (PATH)))
+    ret = qx('btrfs filesystem defragment -v -f -r -t %s "%s"' % \
             (str(EXTENT_SIZE), PATH))
     if DEBUG:
         dbg(ret)
         dbg('--- Fragmentation after')
-        dbg(qx('/usr/sbin/filefrag %s/*' % (PATH)))
+        dbg(qx('filefrag %s/*' % (PATH)))
     self.ack()
 
 plugin = BtrfsDefragPlugin()
