@@ -30,6 +30,10 @@ if [ -f /etc/sysconfig/btrfsmaintenance ]; then
     . /etc/sysconfig/btrfsmaintenance
 fi
 
+if [ -f /etc/default/btrfsmaintenance ]; then
+    . /etc/default/btrfsmaintenance
+fi
+
 refresh_period() {
 	EXPECTED="$1"
 	SCRIPT="$2"
