@@ -30,13 +30,19 @@ if [ -f /etc/sysconfig/btrfsmaintenance ]; then
     . /etc/sysconfig/btrfsmaintenance
 fi
 
+if [ -f /etc/default/btrfsmaintenance ]; then
+    . /etc/default/btrfsmaintenance
+fi
+
 refresh_period() {
 	EXPECTED="$1"
 	SCRIPT="$2"
 	echo "Refresh script $SCRIPT for $EXPECTED"
 
 	for PERIOD in daily weekly monthly; do
-		FILE="/etc/cron.$PERIOD/$SCRIPT"
+	        # NOTE: debian does not allow filenames with dots in /etc/cron.*
+	        LINK="${SCRIPT%.*}"
+		FILE="/etc/cron.$PERIOD/$LINK"
 		if [ "$PERIOD" = "$EXPECTED" ]; then
 			ln -sf "$SCRIPTS/$SCRIPT" "$FILE"
 		else
