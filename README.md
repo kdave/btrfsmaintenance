@@ -191,16 +191,6 @@ The goal of this project is to help administering btrfs filesystems. It is not
 supposed to be distribution specific. Common scripts/configs are preferred but
 per-distro exceptions will be added when necessary.
 
-Please open issues for bugs or feature requests.
-
-Pull requests will be accepted if the patches satisfy some basic quality
-requirements:
-
-* descriptive subject lines
-* changelogs that explain why the change is made (unless it's obvious)
-* one logical change per patch (really simple changes can be grouped)
-* the `Signed-off-by` line is optional but desirable, see [Developer Certificate of Origin](http://developercertificate.org/)
-
-For non-github contributors: mail bug reports or patches are also accepted.
-
 License: [GPL 2](https://www.gnu.org/licenses/gpl-2.0.html)
+
+[Contributing guide](CONTRIBUTING.md).
