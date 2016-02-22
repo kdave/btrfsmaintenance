@@ -40,7 +40,9 @@ refresh_period() {
 	echo "Refresh script $SCRIPT for $EXPECTED"
 
 	for PERIOD in daily weekly monthly; do
-		FILE="/etc/cron.$PERIOD/$SCRIPT"
+	        # NOTE: debian does not allow filenames with dots in /etc/cron.*
+	        LINK="${SCRIPT%.*}"
+		FILE="/etc/cron.$PERIOD/$LINK"
 		if [ "$PERIOD" = "$EXPECTED" ]; then
 			ln -sf "$SCRIPTS/$SCRIPT" "$FILE"
 		else
