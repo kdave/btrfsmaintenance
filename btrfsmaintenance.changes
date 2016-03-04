@@ -1,4 +1,14 @@
 -------------------------------------------------------------------
+Fri Mar  4 00:00:00 CET 2016 - dsterba@suse.cz
+
+- version 0.2
+  - updated documentation
+  - support debian-like configuration paths
+  - no hardcoded paths to external utilities
+  - fixed logger name typos for 'journal' target
+  - defrag fixes (sysconfig, find arguments)
+
+-------------------------------------------------------------------
 Thu Oct  8 00:00:00 CEST 2015 - dsterba@suse.cz
 
 - version 0.1.2
