@@ -19,7 +19,8 @@ SCRIPTS=/usr/share/btrfsmaintenance
 if [ "$1" = 'uninstall' ]; then
 	for SCRIPT in btrfs-scrub.sh btrfs-defrag.sh btrfs-balance.sh btrfs-trim.sh; do
 		for PERIOD in daily weekly monthly; do
-			FILE="/etc/cron.$PERIOD/$SCRIPT"
+			LINK="${SCRIPT%.*}"
+			FILE="/etc/cron.$PERIOD/$LINK"
 			rm -f "$FILE"
 		done
 	done
