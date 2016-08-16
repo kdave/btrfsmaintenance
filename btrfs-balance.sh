@@ -24,6 +24,7 @@ LOGIDENTIFIER='btrfs-balance'
 {
 OIFS="$IFS"
 IFS=:
+exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	IFS="$OIFS"
 	if [ $(stat -f --format=%T "$MM") != "btrfs" ]; then

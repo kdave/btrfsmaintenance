@@ -35,6 +35,7 @@ fi
 {
 OIFS="$IFS"
 IFS=:
+exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 	IFS="$OIFS"
 	echo "Running scrub on $MNT"
