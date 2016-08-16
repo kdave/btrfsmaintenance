@@ -39,6 +39,7 @@ done
 case "$BTRFS_LOG_OUTPUT" in
 	stdout) cat;;
 	journal) systemd-cat -t "$LOGIDENTIFIER";;
+	syslog) logger -t "$LOGIDENTIFIER";;
 	*) cat;;
 esac
 
