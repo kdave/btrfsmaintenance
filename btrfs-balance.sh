@@ -20,8 +20,10 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-balance'
+. $(dirname $0)/btrfsmaintenance-functions
 
 {
+evaluate_auto_mountpoint BTRFS_BALANCE_MOUNTPOINTS
 OIFS="$IFS"
 IFS=:
 exec 2>&1 # redirect stderr to stdout to catch all output to log destination
