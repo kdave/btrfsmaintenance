@@ -34,7 +34,7 @@ if [ "$BTRFS_SCRUB_PRIORITY" = "normal" ]; then
 fi
 
 {
-evaluate_auto_mountpoint BTRFS_BALANCE_MOUNTPOINTS
+evaluate_auto_mountpoint BTRFS_SCRUB_MOUNTPOINTS
 OIFS="$IFS"
 IFS=:
 exec 2>&1 # redirect stderr to stdout to catch all output to log destination
