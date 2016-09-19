@@ -62,7 +62,8 @@ BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"
 ## Type:        string
 ## Default:     "1 5 10 20 30"
 #
-# The usage percent for balancing metadata block groups.
+# The usage percent for balancing metadata block groups. The values are also
+# used in case the filesystem has mixed blockgroups.
 #
 # Note: default values should not disturb normal work but may not reclaim
 # enough block groups. If you observe that, add higher values but beware that

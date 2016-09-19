@@ -36,16 +36,31 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	echo "Before balance of $MM"
 	btrfs filesystem df "$MM"
 	df -H "$MM"
-	btrfs balance start -dusage=0 "$MM"
-	for BB in $BTRFS_BALANCE_DUSAGE; do
-		# quick round to clean up the unused block groups
-		btrfs balance start -v -dusage=$BB "$MM"
-	done
-	btrfs balance start -musage=0 "$MM"
-	for BB in $BTRFS_BALANCE_MUSAGE; do
-		# quick round to clean up the unused block groups
-		btrfs balance start -v -musage="$BB" "$MM"
-	done
+
+	if check_mixed_bg "$MM"; then
+		btrfs balance start -musage=0 -dusage=0 "$MM"
+		# we use the MUSAGE values for both, supposedly less aggressive
+		# values, but as the data and metadata space is shared on
+		# mixed-bg this does not lead to the situations we want to
+		# prevent when the blockgroups are split (ie. underused
+		# blockgroups)
+		for BB in $BTRFS_BALANCE_MUSAGE; do
+			# quick round to clean up the unused block groups
+			btrfs balance start -v -musage=$BB -dusage=$BB "$MM"
+		done
+	else
+		btrfs balance start -dusage=0 "$MM"
+		for BB in $BTRFS_BALANCE_DUSAGE; do
+			# quick round to clean up the unused block groups
+			btrfs balance start -v -dusage=$BB "$MM"
+		done
+		btrfs balance start -musage=0 "$MM"
+		for BB in $BTRFS_BALANCE_MUSAGE; do
+			# quick round to clean up the unused block groups
+			btrfs balance start -v -musage="$BB" "$MM"
+		done
+	fi
+
 	echo "After balance of $MM"
 	btrfs filesystem df "$MM"
 	df -H "$MM"
