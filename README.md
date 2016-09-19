@@ -146,6 +146,11 @@ some overview.
 
 ### Installation ###
 
+For debian based systems, run `debian-install.sh` as root.
+
+For non-debian based systems, check for distro provided package or
+do manual installation of files as described below.
+
 * `btrfs-*.sh` task scripts are expected at `/usr/share/btrfsmaintenance`
 * `sysconfig.btrfsmaintenance` configuration template is put to:
  * `/etc/sysconfig/btrfsmaintenance` on SUSE and RedHat based systems or derivatives
