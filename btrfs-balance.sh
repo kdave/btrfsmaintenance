@@ -20,10 +20,13 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-balance'
+. $(dirname $0)/btrfsmaintenance-functions
 
 {
+evaluate_auto_mountpoint BTRFS_BALANCE_MOUNTPOINTS
 OIFS="$IFS"
 IFS=:
+exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	IFS="$OIFS"
 	if [ $(stat -f --format=%T "$MM") != "btrfs" ]; then
@@ -52,6 +55,8 @@ done
 case "$BTRFS_LOG_OUTPUT" in
 	stdout) cat;;
 	journal) systemd-cat -t "$LOGIDENTIFIER";;
+	syslog) logger -t "$LOGIDENTIFIER";;
+	none) cat >/dev/null;;
 	*) cat;;
 esac
 

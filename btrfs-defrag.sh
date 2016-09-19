@@ -24,6 +24,7 @@ LOGIDENTIFIER='btrfs-defrag'
 {
 OIFS="$IFS"
 IFS=:
+exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for P in $BTRFS_DEFRAG_PATHS; do
 	IFS="$OIFS"
 	if [ $(stat -f --format=%T "$P") != "btrfs" ]; then
@@ -38,6 +39,8 @@ done
 case "$BTRFS_LOG_OUTPUT" in
 	stdout) cat;;
 	journal) systemd-cat -t "$LOGIDENTIFIER";;
+	syslog) logger -t "$LOGIDENTIFIER";;
+	none) cat >/dev/null;;
 	*) cat;;
 esac
 

@@ -1,8 +1,8 @@
 ## Path:        System/File systems/btrfs
-## Type:        string(none,stdout,journal)
+## Type:        string(none,stdout,journal,syslog)
 ## Default:     "stdout"
 #
-# Output target for messages. Journal messages are tagged by the task name like
+# Output target for messages. Journal and syslog messages are tagged by the task name like
 # 'btrfs-scrub' etc.
 BTRFS_LOG_OUTPUT="stdout"
 
@@ -36,6 +36,7 @@ BTRFS_DEFRAG_MIN_SIZE="+1M"
 # Which mountpoints/filesystems to balance periodically. This may reclaim unused
 # portions of the filesystem and make the rest more compact.
 # (Colon separated paths)
+# The special word/mountpoint "auto" will evaluate all mounted btrfs filesystems at runtime
 BTRFS_BALANCE_MOUNTPOINTS="/"
 
 ## Path:           System/File systems/btrfs
@@ -74,6 +75,7 @@ BTRFS_BALANCE_MUSAGE="1 5 10 20 30"
 #
 # Which mountpoints/filesystems to scrub periodically.
 # (Colon separated paths)
+# The special word/mountpoint "auto" will evaluate all mounted btrfs filesystems at runtime
 BTRFS_SCRUB_MOUNTPOINTS="/"
 
 ## Path:        System/File systems/btrfs
@@ -117,4 +119,5 @@ BTRFS_TRIM_PERIOD="none"
 #
 # Which mountpoints/filesystems to trim periodically.
 # (Colon separated paths)
+# The special word/mountpoint "auto" will evaluate all mounted btrfs filesystems at runtime
 BTRFS_TRIM_MOUNTPOINTS="/"

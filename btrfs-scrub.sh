@@ -20,6 +20,7 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-scrub'
+. $(dirname $0)/btrfsmaintenance-functions
 
 readonly=
 if [ "$BTRFS_SCRUB_READ_ONLY" = "true" ]; then
@@ -33,8 +34,10 @@ if [ "$BTRFS_SCRUB_PRIORITY" = "normal" ]; then
 fi
 
 {
+evaluate_auto_mountpoint BTRFS_SCRUB_MOUNTPOINTS
 OIFS="$IFS"
 IFS=:
+exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 	IFS="$OIFS"
 	echo "Running scrub on $MNT"
@@ -53,6 +56,8 @@ done
 case "$BTRFS_LOG_OUTPUT" in
 	stdout) cat;;
 	journal) systemd-cat -t "$LOGIDENTIFIER";;
+	syslog) logger -t "$LOGIDENTIFIER";;
+	none) cat >/dev/null;;
 	*) cat;;
 esac
 
