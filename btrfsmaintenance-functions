@@ -32,3 +32,15 @@ evaluate_auto_mountpoint() {
 		eval "$1=$MNTLIST"
 	fi
 }
+
+# function: detect_mixed_bg
+# parameter: path to a mounted filesystem
+#
+# check if the filesystem contains mixed block groups,
+detect_mixed_bg() {
+	# simple test is to read 'btrfs fi df',
+	# (we could look for /sys/sfs/btrfs/UUID/allocation/mixed if we know
+	# the UUID)
+
+	btrfs filesystem df "$1" | grep -q "Data+Metadata"
+}
