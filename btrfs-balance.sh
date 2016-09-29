@@ -37,7 +37,7 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	btrfs filesystem df "$MM"
 	df -H "$MM"
 
-	if check_mixed_bg "$MM"; then
+	if detect_mixed_bg "$MM"; then
 		btrfs balance start -musage=0 -dusage=0 "$MM"
 		# we use the MUSAGE values for both, supposedly less aggressive
 		# values, but as the data and metadata space is shared on
