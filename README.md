@@ -162,7 +162,7 @@ do manual installation of files as described below.
 ### cron jobs ###
 
 The periodic execution of the tasks is done by the 'cron' service.  Symlinks to
-th task scripts are located in the respective directories in
+the task scripts are located in the respective directories in
 `/etc/cron.<PERIOD>`.
 
 The script `btrfsmaintenance-refresh-cron.sh` will synchronize the symlinks
