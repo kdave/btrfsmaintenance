@@ -44,3 +44,25 @@ detect_mixed_bg() {
 
 	btrfs filesystem df "$1" | grep -q "Data+Metadata"
 }
+
+# function: check_scrub_running
+# parameter: path to a mounted filesystem
+#
+# check if scrub is in progress on a given filesystem, return 0 if it is so
+check_scrub_running() {
+	btrfs scrub status "$1" | grep -q "scrub.*running for"
+}
+
+# function: check_balance_running
+# parameter: path to a mounted filesystem
+#
+# check if balance is in progress on a given filesystem, return 0 if it is so
+check_balance_running() {
+	# 0: not in progress
+	# 1: in progress
+	# 2: other error (EPERM)
+	if btrfs balance status "$1" >& /dev/null; then
+		return 1
+	fi
+	return 0
+}
