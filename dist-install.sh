@@ -26,6 +26,7 @@ fi
 install -oroot -groot -m644 sysconfig.btrfsmaintenance "$sysconfdir"/btrfsmaintenance
 install -d -oroot -groot -m755 /usr/share/btrfsmaintenance
 install -oroot -groot -m755 btrfs-*.sh /usr/share/btrfsmaintenance/
+install -oroot -groot -m644 btrfsmaintenance-functions /usr/share/btrfsmaintenance/
 
 echo "Installation path: $sysconfdir"
 echo "Now edit cron periods and mount points in $sysconfdir/btrfsmaintenance then run ./btrfsmaintenance-refresh-cron.sh to update cron symlinks
