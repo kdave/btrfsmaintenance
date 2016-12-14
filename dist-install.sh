@@ -12,15 +12,15 @@ sysconfdir="$1"
 
 if [ -z "$1" ]; then
 	if [ -d /etc/sysconfig ]; then
-		prefix=/etc/sysconfig
+		sysconfdir=/etc/sysconfig
 	elif [ -d /etc/default ]; then
-		prefix=/etc/default
+		sysconfdir=/etc/default
 	else
 		echo "Cannot detect sysconfig directory, please specify manually"
 		exit 1
 	fi
 else
-	prefix="$1"
+	sysconfdir="$1"
 fi
 
 install -oroot -groot -m644 sysconfig.btrfsmaintenance "$sysconfdir"/btrfsmaintenance
