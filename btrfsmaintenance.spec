@@ -17,7 +17,7 @@
 
 
 Name:           btrfsmaintenance
-Version:        0.2
+Version:        0.3
 Release:        0
 Summary:        Scripts for btrfs periodic maintenance tasks
 License:        GPL-2.0
@@ -56,6 +56,7 @@ install -m 755 btrfs-balance.sh %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfs-scrub.sh %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfs-trim.sh %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfsmaintenance-refresh-cron.sh %{buildroot}%{_datadir}/%{name}
+install -m 644 btrfsmaintenance-functions %{buildroot}%{_datadir}/%{name}
 
 %if 0%{?suse_version} >= 1210
 install -m 755 -d %{buildroot}%{_unitdir}

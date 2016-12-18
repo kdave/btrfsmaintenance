@@ -20,7 +20,7 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-trim'
-. $(dirname $0)/btrfsmaintenance-functions
+. $(dirname $(realpath $0))/btrfsmaintenance-functions
 
 {
 evaluate_auto_mountpoint BTRFS_TRIM_MOUNTPOINTS

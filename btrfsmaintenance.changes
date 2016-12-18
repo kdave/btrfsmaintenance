@@ -1,4 +1,18 @@
 -------------------------------------------------------------------
+Tue Nov 15 00:00:00 CET 2016 - dsterba@suse.cz
+
+- version 0.3
+  - add syslog to logging targets
+  - add none target (/dev/null)
+  - autodetect btrfs filesystems for balance, scrub and trim
+  - detect mixed blockgroups and use correct balance filters
+  - fix uninstall rules
+  - fix capturing entire output to the log
+  - fix when cron files are symlinks
+  - add generic installation script
+  - doc updates: retention policy tuning
+
+-------------------------------------------------------------------
 Fri Mar  4 00:00:00 CET 2016 - dsterba@suse.cz
 
 - version 0.2
