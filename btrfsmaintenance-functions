@@ -11,7 +11,7 @@
 # are put into the parameter variable
 evaluate_auto_mountpoint() {
 	MOUNTPOINTSVAR=\$"$1"
-	if [ $(eval "expr \"$MOUNTPOINTSVAR\"") == "auto" ]; then
+	if [ "$(eval "expr \"$MOUNTPOINTSVAR\"")" = "auto" ]; then
 		local BTRFS_DEVICES=""
 		local DEVICE=""
 		local MNT=""
