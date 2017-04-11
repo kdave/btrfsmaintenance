@@ -11,16 +11,16 @@ umask 022
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export PATH
 
-if [ -f /etc/sysconfig/btrfsmaintenance ] ; then
-    . /etc/sysconfig/btrfsmaintenance
+if [ -f /etc/sysconfig/btrfsmaintenance/sysconfig.btrfsmaintenance ] ; then
+    . /etc/sysconfig/btrfsmaintenance/sysconfig.btrfsmaintenance
 fi
 
-if [ -f /etc/default/btrfsmaintenance ] ; then
-    . /etc/default/btrfsmaintenance
+if [ -f /etc/default/btrfsmaintenance/sysconfig.btrfsmaintenance ] ; then
+    . /etc/default/btrfsmaintenance/sysconfig.btrfsmaintenance
 fi
 
 LOGIDENTIFIER='btrfs-scrub'
-. $(dirname $(realpath $0))/btrfsmaintenance-functions
+#. $(dirname $(realpath $0))/btrfsmaintenance-functions
 
 readonly=
 if [ "$BTRFS_SCRUB_READ_ONLY" = "true" ]; then
