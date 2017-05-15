@@ -13,6 +13,7 @@ cp *.template $tardir
 cp sysconfig.* $tardir
 cp COPYING $tardir
 cp README.* $tardir
+cp btrfsmaintenance-functions $tardir
 rm $tardir/$(basename $0)
 
 tar cvjf "$tardir".tar.bz2 "$tardir"
