@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Fri Apr  7 00:00:00 CEST 2017 - dsterba@suse.cz
+
+- version 0.3.1
+  - dist-install: fix installation paths, install functions
+  - functions: fix syntax to be compatible with dash
+  - spec: install functions file
+
+-------------------------------------------------------------------
 Tue Nov 15 00:00:00 CET 2016 - dsterba@suse.cz
 
 - version 0.3

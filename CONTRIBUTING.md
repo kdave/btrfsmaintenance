@@ -9,8 +9,9 @@ applicable.
 Common scripts/configs are preferred but per-distro exceptions will be added
 when necessary.
 
-Backward compatibility is important ot us. The scripts could be used on
+Backward compatibility is important to us. The scripts could be used on
 long-term supported distros but also in bleeding edge development environments.
+
 
 #### Bug reports, feature requests ####
 
@@ -19,6 +20,7 @@ Please open issues for bugs or feature requests.
 Some features may depend on functionality provided by linux kernel or
 btrfs-progs. Patches might get applied after the required functionality is
 merged upstream.
+
 
 #### Pull requests ####
 
@@ -34,8 +36,10 @@ requirements:
 
 For non-github contributors: mail bug reports or patches are also accepted.
 
+
 #### Releases ####
 
 At the moment there's no schedule, the basic functionality is covered.
 Releases are cut when there are enough bugfixes accumulated or there's an
-urgent fix.
+urgent fix. If you think thre's an important fix yet unreleased, feel free to
+ping and ask about the ETA.

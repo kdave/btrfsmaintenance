@@ -146,7 +146,7 @@ some overview.
 
 ### Installation ###
 
-For debian based systems, run `debian-install.sh` as root.
+For debian based systems, run `dist-install.sh` as root.
 
 For non-debian based systems, check for distro provided package or
 do manual installation of files as described below.
