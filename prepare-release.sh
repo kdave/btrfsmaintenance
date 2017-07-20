@@ -9,7 +9,7 @@ mkdir "$tardir"
 cp *.py $tardir
 cp *.sh $tardir
 cp *.service $tardir
-cp *.timer $tadir
+cp *.timer $tardir
 cp *.template $tardir
 cp sysconfig.* $tardir
 cp COPYING $tardir
