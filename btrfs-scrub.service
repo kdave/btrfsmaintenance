@@ -1,5 +1,5 @@
 [Unit]
-Description=Dscard unused blocks on a mounted filesystem.
+Description=Scrub btrfs filesystem, verify block checksums
 Documentation=man:fstrim
 After=fstrim.service btrfs-trim.service
 
