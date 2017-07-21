@@ -18,11 +18,9 @@ export PATH
 SCRIPTS=/usr/share/btrfsmaintenance
 
 if [ "$1" = 'uninstall' ]; then
-	for SCRIPT in btrfs-scrub.sh btrfs-defrag.sh btrfs-balance.sh btrfs-trim.sh; do
+	for SERVICE in btrfs-scrub btrfs-defrag btrfs-balance btrfs-trim; do
 		for PERIOD in daily weekly monthly; do
-			LINK="${SCRIPT%.*}"
-			FILE="/etc/cron.$PERIOD/$LINK"
-			rm -f "$FILE"
+			systemctl disable "$SERVICE-$PERIOD".timer
 		done
 	done
 	exit 0
@@ -46,7 +44,6 @@ refresh_period() {
 		if [ "$PERIOD" = "$EXPECTED" ]; then
 			systemctl enable "$SERVICE-$PERIOD".timer
 		else
-			systemctl disable "$SERVICE-$PERIOD".timer
 		fi
 	done
 }
