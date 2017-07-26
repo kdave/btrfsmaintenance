@@ -56,7 +56,6 @@ install -m 755 btrfs-balance.sh %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfs-scrub.sh %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfs-trim.sh %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfsmaintenance-refresh-cron.sh %{buildroot}%{_datadir}/%{name}
-install -m 755 btrfsmaintenance-refresh-timers.sh %{buildroot}%{_datadir}/%{name}
 install -m 644 btrfsmaintenance-functions %{buildroot}%{_datadir}/%{name}
 
 %if 0%{?suse_version} >= 1210
@@ -66,18 +65,10 @@ install -m 644 -D btrfs-balance.service %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-defrag.service %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-scrub.service %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-trim.service %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-balance-daily.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-balance-weekly.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-balance-monthly.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-defrag-daily.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-defrag-weekly.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-defrag-monthly.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-scrub-daily.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-scrub-monthly.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-scrub-weekly.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-trim-daily.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-trim-weekly.timer %{buildroot}%{_unitdir}
-install -m 644 -D btrfs-trim-monthly.timer %{buildroot}%{_unitdir}
+install -m 644 -D btrfs-balance.timer %{buildroot}%{_unitdir}
+install -m 644 -D btrfs-defrag.timer %{buildroot}%{_unitdir}
+install -m 644 -D btrfs-scrub.timer %{buildroot}%{_unitdir}
+install -m 644 -D btrfs-trim.timer %{buildroot}%{_unitdir}
 install -m 755 -d %{buildroot}%{_sbindir}
 ln -s %{_sbindir}/service %{buildroot}%{_sbindir}/rcbtrfsmaintenance-refresh
 %else
@@ -131,24 +122,9 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_localstatedir}/adm/f
 %if 0%{?suse_version} >= 1210
 %dir %{_unitdir}
 %{_unitdir}/btrfsmaintenance-refresh.service
-%{_unitdir}/btrfs-balance.service
-%{_unitdir}/btrfs-defrag.service
-%{_unitdir}/btrfs-scrub.service
-%{_unitdir}/btrfs-trim.service
-%{_unitdir}/btrfs-balance-daily.timer
-%{_unitdir}/btrfs-balance-weekly.timer
-%{_unitdir}/btrfs-balance-monthly.timer
-%{_unitdir}/btrfs-defrag-daily.timer
-%{_unitdir}/btrfs-defrag-weekly.timer
-%{_unitdir}/btrfs-defrag-monthly.timer
-%{_unitdir}/btrfs-scrub-daily.timer
-%{_unitdir}/btrfs-scrub-monthly.timer
-%{_unitdir}/btrfs-scrub-weekly.timer
-%{_unitdir}/btrfs-trim-daily.timer
-%{_unitdir}/btrfs-trim-weekly.timer
-%{_unitdir}/btrfs-trim-monthly.timer
+%{_unitdir}/*.service
+%{_unitdir}/*.timer
 %{_sbindir}/rcbtrfsmaintenance-refresh
-%{_sysconfdir}/cron.hourly/btrfsmaintenance-refresh-timers.sh
 %else
 %{_sysconfdir}/cron.hourly/btrfsmaintenance-refresh-cron.sh
 %endif
