@@ -1,4 +1,12 @@
 ## Path:        System/File systems/btrfs
+## Type:        string(cron,systemd-timer)
+## Default:     "cron"
+#
+# Select the way to schedule the jobs. Selecting cron will be used the cron daemon,
+# otherwise selecting systemd-timer will be used systemd timers implementation.
+BTRFS_TIMER_IMPLEMENTATION="systemd-timer"
+
+## Path:        System/File systems/btrfs
 ## Type:        string(none,stdout,journal,syslog)
 ## Default:     "stdout"
 #
