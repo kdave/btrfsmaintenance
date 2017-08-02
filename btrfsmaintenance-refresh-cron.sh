@@ -16,17 +16,6 @@ export PATH
 
 SCRIPTS=/usr/share/btrfsmaintenance
 
-if [ "$1" = 'uninstall' ]; then
-	for SCRIPT in btrfs-scrub.sh btrfs-defrag.sh btrfs-balance.sh btrfs-trim.sh; do
-		for PERIOD in daily weekly monthly; do
-			LINK="${SCRIPT%.*}"
-			FILE="/etc/cron.$PERIOD/$LINK"
-			rm -f "$FILE"
-		done
-	done
-	exit 0
-fi
-
 if [ -f /etc/sysconfig/btrfsmaintenance ]; then
     . /etc/sysconfig/btrfsmaintenance
 fi
@@ -35,7 +24,18 @@ if [ -f /etc/default/btrfsmaintenance ]; then
     . /etc/default/btrfsmaintenance
 fi
 
-refresh_period() {
+case "$1" in
+	cron)
+		BTRFS_TIMER_IMPLEMENTATION="cron"
+		shift
+		;;
+	systemd-timer|timer)
+		BTRFS_TIMER_IMPLEMENTATION="systemd-timer"
+		shift
+		;;
+esac
+
+refresh_cron() {
 	EXPECTED="$1"
 	SCRIPT="$2"
 	echo "Refresh script $SCRIPT for $EXPECTED"
@@ -52,7 +52,55 @@ refresh_period() {
 	done
 }
 
-refresh_period "$BTRFS_SCRUB_PERIOD" btrfs-scrub.sh
-refresh_period "$BTRFS_DEFRAG_PERIOD" btrfs-defrag.sh
-refresh_period "$BTRFS_BALANCE_PERIOD" btrfs-balance.sh
-refresh_period "$BTRFS_TRIM_PERIOD" btrfs-trim.sh
+refresh_timer() {
+	PERIOD="$1"
+	SERVICE="$2"
+	echo "Refresh timer $SERVICE for $PERIOD"
+
+	case "$PERIOD" in
+		daily|weekly|monthly)
+			mkdir -p /etc/systemd/system/"$SERVICE".timer.d/
+			cat << EOF > /etc/systemd/system/"$SERVICE".timer.d/schedule.conf
+[Timer]
+OnCalendar=$PERIOD
+EOF
+			systemctl enable "$SERVICE".timer &> /dev/null
+			systemctl start "$SERVICE".timer &> /dev/null
+			;;
+		*)
+			systemctl stop "$SERVICE".timer &> /dev/null
+			systemctl disable "$SERVICE".timer &> /dev/null
+			rm -rf /etc/systemd/system/"$SERVICE".timer.d
+			;;
+	esac
+}
+
+if [ "$1" = 'uninstall' ]; then
+	for SCRIPT in btrfs-scrub btrfs-defrag btrfs-balance btrfs-trim; do
+		case "$BTRFS_TIMER_IMPLEMENTATION" in
+			systemd-timer)
+				refresh_timer uninstall ${SCRIPT}
+				;;
+			*)
+				refresh_cron uninstall ${SCRIPT}.sh
+				;;
+		esac
+	done
+	exit 0
+fi
+
+case "$BTRFS_TIMER_IMPLEMENTATION" in
+	systemd-timer)
+		refresh_timer "$BTRFS_SCRUB_PERIOD" btrfs-scrub
+		refresh_timer "$BTRFS_DEFRAG_PERIOD" btrfs-defrag
+		refresh_timer "$BTRFS_BALANCE_PERIOD" btrfs-balance
+		refresh_timer "$BTRFS_TRIM_PERIOD" btrfs-trim
+		;;
+	*)
+		refresh_cron "$BTRFS_SCRUB_PERIOD" btrfs-scrub.sh
+		refresh_cron "$BTRFS_DEFRAG_PERIOD" btrfs-defrag.sh
+		refresh_cron "$BTRFS_BALANCE_PERIOD" btrfs-balance.sh
+		refresh_cron "$BTRFS_TRIM_PERIOD" btrfs-trim.sh
+		;;
+esac
+
