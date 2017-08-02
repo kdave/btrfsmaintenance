@@ -1,0 +1,11 @@
+[Unit]
+Description=Balance block groups on a btrfs filesystem
+Documentation=man:btrfs-balance
+
+[Timer]
+OnCalendar=monthly
+AccuracySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
