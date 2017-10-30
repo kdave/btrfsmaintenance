@@ -1,6 +1,11 @@
 Btrfs maintenance toolbox
 =========================
 
+Table of contents:
+* [Quick start](#quick-start)
+* [Distro integration](#distro-integration)
+* [Tuning periodic snapshotting](#tuning-periodic-snapshotting)
+
 This is a set of scripts supplementing the btrfs filesystem and aims to automate
 a few maintenance tasks. This means the *scrub*, *balance*, *trim* or
 *defragmentation*.
