@@ -114,6 +114,12 @@ __Description:__ Run defragmentation on configured directories. This is for
 convenience and not necessary as defragmentation needs are usually different
 for various types of data.
 
+Please note that the defragmentation process does not descend to other mount
+points and nested subvolumes or snapshots. All nested paths would need to be
+enumerated in the respective config variable. The command utilizes `find
+-xdev`, you can use that to verify in advance which paths will the
+defragmentation affect.
+
 __Special case:__
 
 There's a separate defragmentation task that happens automatically and
