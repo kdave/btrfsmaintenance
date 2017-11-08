@@ -117,8 +117,8 @@ for various types of data.
 __Special case:__
 
 There's a separate defragmentation task that happens automatically and
-defragments only the RPM database files in */var/lib/rpm*. This is done via a
-*zypper* plugin and the defrag pass triggers at the end of the installation.
+defragments only the RPM database files. This is done via a *zypper* plugin
+and the defrag pass triggers at the end of the installation.
 
 This improves reading the RPM databases later, but the installation process
 fragments the files very quickly so it's not likely to bring a significant
