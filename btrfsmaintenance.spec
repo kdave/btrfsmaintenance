@@ -89,7 +89,12 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_localstatedir}/adm/f
 
 %preun
 %service_del_preun btrfsmaintenance-refresh.service
-%{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
+if [ $1 -eq 0 ]; then
+  # Remove cron files in %%preun only if it's a package removal.
+  # If it's an upgrade, the %%post section of the new package has
+  # already refreshed the cron links, so we shall not remove them.
+  %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
+fi
 
 %postun
 %service_del_postun btrfsmaintenance-refresh.service
@@ -98,7 +103,9 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_localstatedir}/adm/f
 %if 0%{?suse_version} < 1210
 
 %preun
-%{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
+if [ $1 -eq 0 ]; then
+  %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
+fi
 %endif
 
 %files
