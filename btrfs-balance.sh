@@ -11,16 +11,16 @@ umask 022
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export PATH
 
-if [ -f /etc/sysconfig/btrfsmaintenance ] ; then
-    . /etc/sysconfig/btrfsmaintenance
+if [ -f /etc/sysconfig/btrfsmaintenance/sysconfig.btrfsmaintenance ] ; then
+    . /etc/sysconfig/btrfsmaintenance/sysconfig.btrfsmaintenance
 fi
 
-if [ -f /etc/default/btrfsmaintenance ] ; then
-    . /etc/default/btrfsmaintenance
+if [ -f /etc/default/btrfsmaintenance/sysconfig.btrfsmaintenance ] ; then
+    . /etc/default/btrfsmaintenance/sysconfig.btrfsmaintenance
 fi
 
 LOGIDENTIFIER='btrfs-balance'
-. $(dirname $(realpath $0))/btrfsmaintenance-functions
+#. $(dirname $(realpath $0))/btrfsmaintenance-functions
 
 {
 evaluate_auto_mountpoint BTRFS_BALANCE_MOUNTPOINTS
