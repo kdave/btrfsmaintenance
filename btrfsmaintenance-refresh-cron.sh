@@ -58,7 +58,12 @@ refresh_timer() {
 	echo "Refresh timer $SERVICE for $PERIOD"
 
 	case "$PERIOD" in
-		daily|weekly|monthly)
+		uninstall)
+			systemctl stop "$SERVICE".timer &> /dev/null
+			systemctl disable "$SERVICE".timer &> /dev/null
+			rm -rf /etc/systemd/system/"$SERVICE".timer.d
+			;;
+		*)
 			mkdir -p /etc/systemd/system/"$SERVICE".timer.d/
 			cat << EOF > /etc/systemd/system/"$SERVICE".timer.d/schedule.conf
 [Timer]
@@ -66,11 +71,6 @@ OnCalendar=$PERIOD
 EOF
 			systemctl enable "$SERVICE".timer &> /dev/null
 			systemctl start "$SERVICE".timer &> /dev/null
-			;;
-		*)
-			systemctl stop "$SERVICE".timer &> /dev/null
-			systemctl disable "$SERVICE".timer &> /dev/null
-			rm -rf /etc/systemd/system/"$SERVICE".timer.d
 			;;
 	esac
 }
