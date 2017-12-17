@@ -181,6 +181,10 @@ according to the configuration files. This can be called automatically by a GUI
 configuration tool if it's capable of running post-change scripts or services.
 In that case there's `btrfsmaintenance-refresh.service` systemd service.
 
+This service can also be automatically started upon any modification of the
+configuration file in `/etc/sysconfig/btrfsmaintenance` by installing the
+`btrfsmaintenance-refresh.path` systemd watcher.
+
 ### Post-update defragmentation ###
 
 The package database files tend to be updated in a random way and get

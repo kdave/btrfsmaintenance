@@ -11,6 +11,7 @@ cp *.sh $tardir
 cp *.service $tardir
 cp *.timer $tardir
 cp *.template $tardir
+cp *.path $tardir
 cp sysconfig.* $tardir
 cp COPYING $tardir
 cp README.* $tardir

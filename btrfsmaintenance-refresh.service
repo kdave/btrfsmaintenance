@@ -7,4 +7,5 @@ ExecStart=/usr/share/btrfsmaintenance/btrfsmaintenance-refresh-cron.sh
 Type=oneshot
 
 [Install]
+Also=btrfsmaintenance-refresh.path
 WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Watch /etc/sysconfig/btrfsmaintenance
+
+[Path]
+PathChanged=/etc/sysconfig/btrfsmaintenance
+
+[Install]
+WantedBy=multi-user.target
