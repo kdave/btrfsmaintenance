@@ -369,6 +369,15 @@ Starting point:
     TIMELINE_LIMIT_MONTHLY="0"
     TIMELINE_LIMIT_YEARLY="0"
 
+### Summary
+
+|  Type       |  Hourly  |  Daily  |  Weekly  |  Monthly  |  Yearly  |
+--- | ---: | ---: | ---: | ---: | ---: |
+|  Rolling    |  12      |  5      |  2       |  1        |  0       |
+|  Regular    |  12      |  7      |  4       |  6        |  1       |
+|  Big files  |  12      |  7      |  4       |  6        |  0       |
+|  Mixed      |  12      |  7      |  1       |  0        |  0       |
+
 ## About ##
 
 The goal of this project is to help administering btrfs filesystems. It is not
