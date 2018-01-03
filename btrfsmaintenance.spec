@@ -1,7 +1,7 @@
 #
 # spec file for package btrfsmaintenance
 #
-# Copyright (c) 2014 SUSE LINUX Products GmbH, Nuernberg, Germany.
+# Copyright (c) 2017 SUSE LINUX GmbH, Nuernberg, Germany.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -15,6 +15,11 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
+
+#Compat macro for new _fillupdir macro introduced in Nov 2017
+%if ! %{defined _fillupdir}
+  %define _fillupdir /var/adm/fillup-templates
+%endif
 
 Name:           btrfsmaintenance
 Version:        0.3.1
@@ -81,8 +86,8 @@ ln -s %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh %{buildroot}%{_syscon
 install -m 755 -d %{buildroot}/usr/lib/zypp/plugins/commit
 install -m 755 -D btrfs-defrag-plugin.py %{buildroot}/usr/lib/zypp/plugins/commit
 
-install -m 755 -d %{buildroot}%{_localstatedir}/adm/fillup-templates
-install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_localstatedir}/adm/fillup-templates
+install -m 755 -d %{buildroot}%{_fillupdir}
+install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_fillupdir}
 
 %post
 %{fillup_only btrfsmaintenance}
@@ -120,7 +125,7 @@ fi
 %files
 %defattr(-,root,root)
 %doc COPYING README.md
-%{_localstatedir}/adm/fillup-templates/sysconfig.btrfsmaintenance
+%{_fillupdir}/sysconfig.btrfsmaintenance
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*
 %dir /usr/lib/zypp/
