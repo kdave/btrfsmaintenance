@@ -2,9 +2,9 @@
 
 # This plugin defragments rpm files after update.
 #
-# If the filesystem is btrfs, run defrag command in /var/lib/rpm, set the
-# desired extent size to 64MiB, but this may change in the result depending
-# on the fragmentation of the free space
+# If the filesystem is btrfs, run defrag command in the RPM database
+# folder, set the desired extent size to 64MiB, but this may change in the
+# result depending on the fragmentation of the free space.
 #
 # Why 64MB:
 # - the worst fragmentation has been observed on Packages
@@ -24,7 +24,7 @@ import subprocess
 DEBUG=False
 EXTENT_SIZE=64*1024*1024
 LOGFILE='/tmp/btrfs-defrag-plugin.log'
-PATH='/var/lib/rpm'
+PATH=subprocess.check_output(["rpm", "--eval", "%_dbpath"]).strip()
 
 def dbg(args):
     if not DEBUG: return
