@@ -131,16 +131,32 @@ fragments the files very quickly so it's not likely to bring a significant
 speedup here.
 
 
-## Other ##
+## Periodic scheduling ##
+
+There are now two ways how to schedule and run the periodic tasks: cron and
+systemd timers. Only one can be active on a system and this should be decided
+at the installation time.
+
+### Cron ###
 
 Cron takes care of periodic execution of the scripts, but they can be run any
 time directly from `/usr/share/btrfs/maintenance/`, respecting the configured
 values in `/etc/sysconfig/btrfsmaintenance`.
 
-If the period is changed manually, the cron symlinks have to be refreshed, use
-`systemctl restart btrfsmaintenance-refresh` (or the
-`rcbtrfsmaintenance-refresh` shortcut). Changing the period via *yast2* sysconfig
-editor triggers the refresh automatically.
+The changes to configuration file need to be refleced in the `/etc/cron`
+directories where the scripts are linked for the given period.
+
+If the period is changed, the cron symlinks have to be refreshed:
+
+* manually -- use `systemctl restart btrfsmaintenance-refresh` (or the `rcbtrfsmaintenance-refresh` shortcut)
+* in *yast2* -- sysconfig editor triggers the refresh automatically
+* using a file watcher -- if you install `btrfsmaintenance-refresh.path`, this will utilize the file monitor to detect changes and will run the refresh
+
+### Systemd timers ###
+
+There's a set of timer units that run the respective task script. The periods
+are configured in the `/etc/sysconfig/btrfsmaintenance` file as well. The
+timers have to be installed using a similar way as cron.
 
 
 ## Quick start ##
