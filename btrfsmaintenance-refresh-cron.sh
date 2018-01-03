@@ -53,7 +53,7 @@ refresh_timer() {
 	echo "Refresh timer $SERVICE for $PERIOD"
 
 	case "$PERIOD" in
-		uninstall)
+		uninstall|none)
 			systemctl stop "$SERVICE".timer &> /dev/null
 			systemctl disable "$SERVICE".timer &> /dev/null
 			rm -rf /etc/systemd/system/"$SERVICE".timer.d
