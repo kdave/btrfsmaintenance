@@ -1,15 +1,10 @@
 #!/bin/sh
 #
-# Copyright (c) 2014 SuSE Linux AG, Nuernberg, Germany.
-#
-# please send bugfixes or comments to http://www.suse.de/feedback.
+# Copyright (c) 2017 SUSE LINUX GmbH, Nuernberg, Germany.
 
 # Adjust symlinks of btrfs maintenance services according to the configs.
 # Run with 'uninstall' to remove them again
 
-#
-# paranoia settings
-#
 umask 022
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export PATH
