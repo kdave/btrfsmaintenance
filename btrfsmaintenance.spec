@@ -28,6 +28,7 @@ Requires:       zypp-plugin-python
 Requires:       libzypp(plugin:commit)
 Recommends:     cron
 Supplements:    btrfsprogs
+Requires:       btrfsprogs
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildArch:      noarch
 %{?systemd_requires}
