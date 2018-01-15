@@ -29,17 +29,13 @@ License:        GPL-2.0
 Group:          System/Base
 Url:            https://github.com/kdave/btrfsmaintenance
 Source0:        %{name}-%{version}.tar.bz2
+BuildRequires:  systemd
+Requires:       btrfsprogs
 Requires:       zypp-plugin-python
 Requires:       libzypp(plugin:commit)
-Recommends:     cron
 Supplements:    btrfsprogs
-Requires:       btrfsprogs
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildArch:      noarch
 %{?systemd_requires}
-%if 0%{?suse_version} >= 1210
-BuildRequires:  systemd
-%endif
 
 %description
 Scripts for btrfs maintenance tasks like periodic scrub, balance, trim or defrag
@@ -51,11 +47,7 @@ on selected mountpoints or directories.
 %build
 
 %install
-# fix build error on openSUSE and SLE
-mkdir -p %{buildroot}%{_sysconfdir}/cron.daily/
-mkdir -p %{buildroot}%{_sysconfdir}/cron.weekly/
-mkdir -p %{buildroot}%{_sysconfdir}/cron.monthly/
-
+# scripts
 install -m 755 -d %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfs-defrag.sh %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfs-balance.sh %{buildroot}%{_datadir}/%{name}
@@ -64,7 +56,7 @@ install -m 755 btrfs-trim.sh %{buildroot}%{_datadir}/%{name}
 install -m 755 btrfsmaintenance-refresh-cron.sh %{buildroot}%{_datadir}/%{name}
 install -m 644 btrfsmaintenance-functions %{buildroot}%{_datadir}/%{name}
 
-%if 0%{?suse_version} >= 1210
+# systemd services and timers
 install -m 755 -d %{buildroot}%{_unitdir}
 install -m 644 -D btrfsmaintenance-refresh.service %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-balance.service %{buildroot}%{_unitdir}
@@ -77,63 +69,40 @@ install -m 644 -D btrfs-scrub.timer %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-trim.timer %{buildroot}%{_unitdir}
 install -m 755 -d %{buildroot}%{_sbindir}
 ln -s %{_sbindir}/service %{buildroot}%{_sbindir}/rcbtrfsmaintenance-refresh
-%else
-# just a hack, but sufficient
-install -m 755 -d %{buildroot}%{_sysconfdir}/cron.hourly
-ln -s %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh %{buildroot}%{_sysconfdir}/cron.hourly/
-%endif
 
-install -m 755 -d %{buildroot}/usr/lib/zypp/plugins/commit
-install -m 755 -D btrfs-defrag-plugin.py %{buildroot}/usr/lib/zypp/plugins/commit
+# zypp plugin
+install -m 755 -d %{buildroot}%{_libexecdir}/zypp/plugins/commit
+install -m 755 -D btrfs-defrag-plugin.py %{buildroot}%{_libexecdir}/zypp/plugins/commit
 
+# config
 install -m 755 -d %{buildroot}%{_fillupdir}
 install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_fillupdir}
 
-%post
-%{fillup_only btrfsmaintenance}
-%if 0%{?suse_version} >= 1210
-%service_add_post btrfsmaintenance-refresh.service
-%endif
-%{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh
-
-%if 0%{?suse_version} >= 1210
-
 %pre
-%service_add_pre btrfsmaintenance-refresh.service
+# if the new service files don't exist, we migrate from
+# old version with old script, remove cron symlinks
+[ ! -f %{_unitdir}/btrfs-balance.timer -a -f %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh ]  && %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
+%service_add_pre btrfsmaintenance-refresh.service btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
+
+%post
+%service_add_post btrfsmaintenance-refresh.service btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
+%{fillup_only btrfsmaintenance}
 
 %preun
-%service_del_preun btrfsmaintenance-refresh.service
-if [ $1 -eq 0 ]; then
-  # Remove cron files in %%preun only if it's a package removal.
-  # If it's an upgrade, the %%post section of the new package has
-  # already refreshed the cron links, so we shall not remove them.
-  %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
-fi
+%service_del_preun btrfsmaintenance-refresh.service btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
 
 %postun
-%service_del_postun btrfsmaintenance-refresh.service
-%endif
-
-%if 0%{?suse_version} < 1210
-
-%preun
-if [ $1 -eq 0 ]; then
-  %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
-fi
-%endif
+%service_del_postun btrfsmaintenance-refresh.service btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
 
 %files
-%defattr(-,root,root)
 %doc COPYING README.md
 %{_fillupdir}/sysconfig.btrfsmaintenance
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*
-%dir /usr/lib/zypp/
-%dir /usr/lib/zypp/plugins
-%dir /usr/lib/zypp/plugins/commit
-/usr/lib/zypp/plugins/commit/btrfs-defrag-plugin.py
-%if 0%{?suse_version} >= 1210
-%dir %{_unitdir}
+%dir %{_libexecdir}/zypp/
+%dir %{_libexecdir}/zypp/plugins
+%dir %{_libexecdir}/zypp/plugins/commit
+%{_libexecdir}/zypp/plugins/commit/btrfs-defrag-plugin.py
 %{_unitdir}/btrfsmaintenance-refresh.service
 %{_unitdir}/btrfs-balance.service
 %{_unitdir}/btrfs-defrag.service
@@ -144,8 +113,5 @@ fi
 %{_unitdir}/btrfs-scrub.timer
 %{_unitdir}/btrfs-trim.timer
 %{_sbindir}/rcbtrfsmaintenance-refresh
-%else
-%{_sysconfdir}/cron.hourly/btrfsmaintenance-refresh-cron.sh
-%endif
 
 %changelog
