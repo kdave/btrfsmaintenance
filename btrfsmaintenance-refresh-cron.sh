@@ -86,6 +86,10 @@ fi
 
 case "$BTRFS_TIMER_IMPLEMENTATION" in
 	systemd-timer)
+                # Deinstall cron jobs, don't run it twice.
+                for SCRIPT in btrfs-scrub btrfs-defrag btrfs-balance btrfs-trim; do
+                  refresh_cron uninstall ${SCRIPT}.sh
+                done
 		refresh_timer "$BTRFS_SCRUB_PERIOD" btrfs-scrub
 		refresh_timer "$BTRFS_DEFRAG_PERIOD" btrfs-defrag
 		refresh_timer "$BTRFS_BALANCE_PERIOD" btrfs-balance
