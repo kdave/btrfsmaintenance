@@ -1,4 +1,16 @@
 -------------------------------------------------------------------
+Mon Jan 15 00:00:00 CET 2018 - dsterba@suse.cz
+
+- version 0.4
+  - add support for systemd timers and use them by default; the alternative
+    cron scripts are still present (#29, #36)
+  - add automatic monitoring (via systemd.path) of the config file,
+    no manual updates by btrfsmaintenance-refresh.service needed (#38)
+  - fix RPM database path detection
+  - spec file cleanups
+  - documentation updates
+
+-------------------------------------------------------------------
 Fri Apr  7 00:00:00 CEST 2017 - dsterba@suse.cz
 
 - version 0.3.1
