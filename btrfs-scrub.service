@@ -4,7 +4,7 @@ Documentation=man:fstrim
 After=fstrim.service btrfs-trim.service
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=/usr/share/btrfsmaintenance/btrfs-scrub.sh
 IOSchedulingClass=idle
 CPUSchedulingPolicy=idle
