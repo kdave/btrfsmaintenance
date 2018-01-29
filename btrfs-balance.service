@@ -4,7 +4,7 @@ Documentation=man:btrfs-balance
 After=fstrim.service btrfs-trim.service btrfs-scrub.service
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=/usr/share/btrfsmaintenance/btrfs-balance.sh
 IOSchedulingClass=idle
 CPUSchedulingPolicy=idle
