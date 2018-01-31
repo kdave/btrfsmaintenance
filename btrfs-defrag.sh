@@ -15,6 +15,7 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-defrag'
+. $(dirname $(realpath $0))/btrfsmaintenance-functions
 
 {
 OIFS="$IFS"
@@ -26,8 +27,15 @@ for P in $BTRFS_DEFRAG_PATHS; do
 		echo "Path $P is not btrfs, skipping"
 		continue
 	fi
+
+	disk=$(get_disk_name "$P")
+
+	wait_on_lock_dir "$BTRFS_LOCK_DIR/$disk"
+
 	find "$P" -xdev -size "$BTRFS_DEFRAG_MIN_SIZE" -type f \
 		-exec btrfs filesystem defrag -t 32m -f $BTRFS_VERBOSITY '{}' \;
+
+	unlock_dir "$BTRFS_LOCK_DIR/$disk"
 done
 
 } | \

@@ -8,6 +8,13 @@ BTRFS_LOG_OUTPUT="stdout"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
+## Default:     "stdout"
+#
+# Directory for locking files
+BTRFS_LOCK_DIR="/run/btrfs/"
+
+## Path:        System/File systems/btrfs
+## Type:        string
 ## Default:     ""
 #
 # Run periodic defrag on selected paths. The files from a given path do not
