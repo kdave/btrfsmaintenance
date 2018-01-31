@@ -40,8 +40,17 @@ for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 		echo "Path $MNT is not btrfs, skipping"
 		continue
 	fi
+
+	disk=$(get_disk_name "$MNT")
+
+	wait_on_lock_dir "$BTRFS_LOCK_DIR/$disk"
+
 	btrfs scrub start -Bd $ioprio $readonly "$MNT"
-	if [ "$?" != "0" ]; then
+	retvalue=$?
+
+	unlock_dir "$BTRFS_LOCK_DIR/$disk"
+
+	if [ "$retvalue" != "0" ]; then
 		echo "Scrub cancelled at $MNT"
 		exit 1
 	fi

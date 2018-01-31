@@ -66,3 +66,51 @@ check_balance_running() {
 	fi
 	return 0
 }
+
+# function: wait_on_lock_dir
+# parameter: directory full path and timeout
+#
+# Wait the non-existence and then create a locking directory
+wait_on_lock_dir() {
+	local lockdir="${1%%/}"
+	local basedir=${lockdir%/*}
+	local timeout=$2
+	local timecount=0
+
+	[ -z "$2" ] && timeout="infinite"
+
+	mkdir -p "$basedir"
+	while ! mkdir "$lockdir" &>/dev/null; do
+		[ "$timeout" != "infinite" ] && [ $timecount -ge $timeout ] && return 1
+		sleep 1s
+		timecount=$(($timecount+1))
+	done
+
+	return 0
+}
+
+# function: unlock_dir
+# parameter: path to the lock directory
+#
+# Remove the locking directory
+unlock_dir() {
+	local lockdir="${1%%/}"
+	local basedir=${lockdir%/*}
+
+	rmdir "$lockdir" &>/dev/null
+}
+
+# function: get_disk_name
+# parameter: path to a mounted filesystem
+#
+# return the disk device name (without any directory prefix and 
+# without any partition number suffix) that contain the passed path
+get_disk_name() {
+	local path="$1"
+	local dev="$(df --output=source $path|awk 'END {print $1}')"
+
+	local diskdev="${dev%%[0-9]*}"
+	local disk="${diskdev##*/}"
+
+	echo $disk
+}

@@ -1,7 +1,7 @@
 [Unit]
 Description=Balance block groups on a btrfs filesystem
 Documentation=man:btrfs-balance
-After=fstrim.service btrfs-trim.service btrfs-scrub.service
+After=fstrim.service btrfs-defrag.service btrfs-scrub.service btrfs-trim.service
 
 [Service]
 Type=simple

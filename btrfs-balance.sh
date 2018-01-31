@@ -28,6 +28,11 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 		echo "Path $MM is not btrfs, skipping"
 		continue
 	fi
+
+	disk=$(get_disk_name "$MM")
+
+	wait_on_lock_dir "$BTRFS_LOCK_DIR/$disk"
+
 	echo "Before balance of $MM"
 	btrfs filesystem df "$MM"
 	df -H "$MM"
@@ -59,6 +64,8 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	echo "After balance of $MM"
 	btrfs filesystem df "$MM"
 	df -H "$MM"
+
+	unlock_dir "$BTRFS_LOCK_DIR/$disk"
 done
 
 } | \

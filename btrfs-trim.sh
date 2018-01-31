@@ -24,12 +24,20 @@ IFS=:
 exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MNT in $BTRFS_TRIM_MOUNTPOINTS; do
 	IFS="$OIFS"
+	
+	
 	if [ $(stat -f --format=%T "$MNT") != "btrfs" ]; then
 		echo "Path $MNT is not btrfs, skipping"
 		continue
 	fi
+
+	disk=$(get_disk_name "$MNT")
+	wait_on_lock_dir "$BTRFS_LOCK_DIR/$disk"
+
 	echo "Running fstrim on $MNT"
 	fstrim "$MNT"
+
+	unlock_dir "$BTRFS_LOCK_DIR/$disk"
 done
 
 } | \
