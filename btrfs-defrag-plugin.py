@@ -17,14 +17,19 @@
 #   contiguous space, the bigger the extent is, the worse and the extent
 #   size hint is not reached anyway
 
-from sys import stderr
+import sys
+if sys.version_info[0] >= 3:
+    from builtins import str
+    popen_kwargs = { 'encoding': 'ascii' }
+else:
+    popen_kwargs = { }
 from zypp_plugin import Plugin
 import subprocess
 
 DEBUG=False
 EXTENT_SIZE=64*1024*1024
 LOGFILE='/tmp/btrfs-defrag-plugin.log'
-PATH=subprocess.check_output(["rpm", "--eval", "%_dbpath"]).strip()
+PATH=subprocess.check_output(["rpm", "--eval", "%_dbpath"], **popen_kwargs).strip()
 
 def dbg(args):
     if not DEBUG: return
@@ -34,7 +39,7 @@ def dbg(args):
     f.close()
 
 def qx(args):
-    out=subprocess.Popen(args, shell=True, stdout=subprocess.PIPE).stdout
+    out=subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, **popen_kwargs).stdout
     outstr="".join(out.readlines())
     out.close()
     return outstr
