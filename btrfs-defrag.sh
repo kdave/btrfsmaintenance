@@ -22,7 +22,7 @@ IFS=:
 exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for P in $BTRFS_DEFRAG_PATHS; do
 	IFS="$OIFS"
-	if [ $(stat -f --format=%T "$P") != "btrfs" ]; then
+	if ! is_btrfs "$P"; then
 		echo "Path $P is not btrfs, skipping"
 		continue
 	fi
