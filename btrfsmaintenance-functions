@@ -66,3 +66,13 @@ check_balance_running() {
 	fi
 	return 0
 }
+
+# function: is_btrfs
+# parameter: path to a mounted filesystem
+#
+# check if filesystem is a btrfs
+is_btrfs() {
+	local FS=$(stat -f --format=%T "$1")
+	[ "$FS" == "btrfs" ] && return 0
+	return 1
+}

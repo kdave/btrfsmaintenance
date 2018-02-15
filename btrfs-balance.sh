@@ -24,7 +24,7 @@ IFS=:
 exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	IFS="$OIFS"
-	if [ "$(eval stat -f --format=%T \"$MM\")" != "btrfs" ]; then
+	if ! is_btrfs "$MM"; then
 		echo "Path $MM is not btrfs, skipping"
 		continue
 	fi

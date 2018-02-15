@@ -36,7 +36,7 @@ exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 	IFS="$OIFS"
 	echo "Running scrub on $MNT"
-	if [ "$(eval stat -f --format=%T \"$MNT\")" != "btrfs" ]; then
+	if ! is_btrfs "$MNT"; then
 		echo "Path $MNT is not btrfs, skipping"
 		continue
 	fi
