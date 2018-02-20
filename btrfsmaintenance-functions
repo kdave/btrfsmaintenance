@@ -76,3 +76,38 @@ is_btrfs() {
 	[ "$FS" == "btrfs" ] && return 0
 	return 1
 }
+
+# function: check_power_status
+# parameter: paths to check the status
+#
+# Return true if at least one path is online
+check_power_status() {
+	local status=$(cat "$@" 2>/dev/null)
+	[ -z "$status" ] && return 0
+	case "$status" in
+		*1*)
+			return 0
+			;;
+		*)
+			return 1
+			;;
+	esac
+}
+
+# function: wait_ac_power
+# parameter: {timeout} {AC power online device}
+#
+# wait until ac power goes online
+wait_ac_power() {
+	local timecount=0
+	local timeout=$1
+
+	while ! check_power_status "$@"; do
+		# AC is not online
+		[ $timeout -gt 0 ] && [ $timecount -ge $timeout ] && return 1
+		sleep 30s
+		timecount=$((timecount+1))
+	done
+
+	return 0
+}

@@ -14,6 +14,10 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
     . /etc/default/btrfsmaintenance
 fi
 
+if [ "$BTRFS_DEFRAG_WAIT_AC_POWER" = "true" ]; then
+	wait_ac_power $BTRFS_AC_POWER_TIMEOUT $BTRFS_AC_POWER_DEVICE
+fi
+
 LOGIDENTIFIER='btrfs-defrag'
 
 {
