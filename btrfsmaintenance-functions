@@ -73,6 +73,6 @@ check_balance_running() {
 # check if filesystem is a btrfs
 is_btrfs() {
 	local FS=$(stat -f --format=%T "$1")
-	[ "$FS" == "btrfs" ] && return 0
+	[ "$FS" = "btrfs" ] && return 0
 	return 1
 }
