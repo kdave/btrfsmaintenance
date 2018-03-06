@@ -14,11 +14,18 @@ BTRFS_LOG_OUTPUT="stdout"
 BTRFS_AC_POWER_TIMEOUT=3600
 
 ## Path:        System/File systems/btrfs
-## Type:        string
-## Default:     "/sys/class/power_supply/*/online"
+## Type:        string(retry,assume_no_ac_power,assume_ac_power)
+## Default:     "retry"
 #
-# Path of AC status flag
-BTRFS_AC_POWER_DEVICE="/sys/class/power_supply/*/online"
+# Default action when ac power status is unknown
+BTRFS_AC_POWER_ACTION_ON_UNKNOWN_STATUS="retry"
+
+## Path:        System/File systems/btrfs
+## Type:        string(continue,abort)
+## Default:     "abort"
+#
+# Default action when ac power status is unknown
+BTRFS_AC_POWER_ACTION_ON_NO_AC_POWER="abort"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
