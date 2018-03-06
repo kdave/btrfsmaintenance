@@ -3,14 +3,14 @@
 # This plugin defragments rpm files after update.
 #
 # If the filesystem is btrfs, run defrag command in the RPM database
-# folder, set the desired extent size to 64MiB, but this may change in the
+# folder, set the desired extent size to 32MiB, but this may change in the
 # result depending on the fragmentation of the free space.
 #
-# Why 64MB:
+# Why 32MiB:
 # - the worst fragmentation has been observed on Packages
 # - this can grow up to several hundred of megabytes
 # - the file gets updated at random places
-# - although the file will be composed of several extents, it's faster to
+# - although the file will be composed of many extents, it's faster to
 #   merge only the extents that affect some portions of the file, instead
 #   of the whole file; the difference is negligible
 # - due to the free space fragmentation over time, it's hard to find
@@ -27,7 +27,7 @@ from zypp_plugin import Plugin
 import subprocess
 
 DEBUG=False
-EXTENT_SIZE=64*1024*1024
+EXTENT_SIZE=32*1024*1024
 LOGFILE='/tmp/btrfs-defrag-plugin.log'
 PATH=subprocess.check_output(["rpm", "--eval", "%_dbpath"], **popen_kwargs).strip()
 
