@@ -64,6 +64,11 @@ class BtrfsDefragPlugin(Plugin):
     if DEBUG:
         dbg('--- Fragmentation before')
         dbg(qx('filefrag %s/*' % (PATH)))
+    # defrag options:
+    # - verbose
+    # - recursive
+    # - flush each file before going to the next one
+    # - set the extent target hint
     ret = qx('btrfs filesystem defragment -v -f -r -t %s "%s"' % \
             (str(EXTENT_SIZE), PATH))
     if DEBUG:
