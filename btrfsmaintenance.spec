@@ -22,7 +22,7 @@
 %endif
 
 Name:           btrfsmaintenance
-Version:        0.4
+Version:        0.4.1
 Release:        0
 Summary:        Scripts for btrfs periodic maintenance tasks
 License:        GPL-2.0
