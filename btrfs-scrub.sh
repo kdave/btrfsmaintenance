@@ -15,7 +15,7 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-scrub'
-. $(dirname $(realpath $0))/btrfsmaintenance-functions
+. $(dirname $(realpath "$0"))/btrfsmaintenance-functions
 
 readonly=
 if [ "$BTRFS_SCRUB_READ_ONLY" = "true" ]; then

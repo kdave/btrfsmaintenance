@@ -15,7 +15,7 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-balance'
-. $(dirname $(realpath $0))/btrfsmaintenance-functions
+. $(dirname $(realpath "$0"))/btrfsmaintenance-functions
 
 {
 evaluate_auto_mountpoint BTRFS_BALANCE_MOUNTPOINTS

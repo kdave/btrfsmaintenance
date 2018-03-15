@@ -74,10 +74,10 @@ if [ "$1" = 'uninstall' ]; then
 	for SCRIPT in btrfs-scrub btrfs-defrag btrfs-balance btrfs-trim; do
 		case "$BTRFS_TIMER_IMPLEMENTATION" in
 			systemd-timer)
-				refresh_timer uninstall ${SCRIPT}
+				refresh_timer uninstall "${SCRIPT}"
 				;;
 			*)
-				refresh_cron uninstall ${SCRIPT}.sh
+				refresh_cron uninstall "${SCRIPT}.sh"
 				;;
 		esac
 	done
@@ -88,7 +88,7 @@ case "$BTRFS_TIMER_IMPLEMENTATION" in
 	systemd-timer)
                 # Deinstall cron jobs, don't run it twice.
                 for SCRIPT in btrfs-scrub btrfs-defrag btrfs-balance btrfs-trim; do
-                  refresh_cron uninstall ${SCRIPT}.sh
+                  refresh_cron uninstall "${SCRIPT}.sh"
                 done
 		refresh_timer "$BTRFS_SCRUB_PERIOD" btrfs-scrub
 		refresh_timer "$BTRFS_DEFRAG_PERIOD" btrfs-defrag
