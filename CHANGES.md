@@ -1,3 +1,9 @@
+version 0.4.1 (2018-03-15)
+- defrag plugin: python2 and 3 compatibility
+- defrag plugin: target extent size lowered to 32MiB (#43)
+- shell compatibility fixes
+- systemd unit type fixes
+
 version 0.4 (2018-01-18)
 
 - add support for systemd timers and use them by default; the alternative cron
