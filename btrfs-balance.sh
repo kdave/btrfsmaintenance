@@ -17,6 +17,15 @@ fi
 LOGIDENTIFIER='btrfs-balance'
 . $(dirname $(realpath "$0"))/btrfsmaintenance-functions
 
+if [ "$BTRFS_BALANCE_WAIT_AC_POWER" = "true" ]; then
+	if ! wait_ac_power $BTRFS_AC_POWER_TIMEOUT; then
+		if [ "$BTRFS_AC_POWER_ACTION_ON_NO_AC_POWER" == "abort" ]; then
+			echo "No AC Power. Abort"
+			exit 1
+		fi
+	fi
+fi
+
 {
 evaluate_auto_mountpoint BTRFS_BALANCE_MOUNTPOINTS
 OIFS="$IFS"

@@ -76,3 +76,85 @@ is_btrfs() {
 	[ "$FS" = "btrfs" ] && return 0
 	return 1
 }
+
+# function: check_power_status
+# parameter:
+#
+# Detect AC power or not in a portable way
+# Exit 0 if on AC power, 1 if not and 255 if we don't know how to work it out
+# Code from Openrc/scripts/on_ac_power
+check_power_status() {
+	local state=255
+	if [ -f /proc/acpi/ac_adapter/*/state ]; then
+		cat /proc/acpi/ac_adapter/*/state | while read line; do
+			case "$line" in
+				"state:"*"off-line") state=128; break;;
+			esac
+		done
+	elif [ -f /sys/class/power_supply/*/online ]; then
+		cat /sys/class/power_supply/*/online | while read line; do
+			[ "${line}" = 0 ] && state=128 && break;
+		done
+	elif [ -f /proc/pmu/info ]; then
+		cat /proc/pmu/info | while read line; do
+			case "$line" in
+				"AC Power"*": 0") state=128; break;;
+			esac
+		done
+	elif command -v envstat >/dev/null 2>&1; then
+		# NetBSD has envstat
+		envstat -d acpiacad0 2>/dev/null | while read line; do
+			case "$line" in
+				"connected:"*"OFF") state=128; break;;
+			esac
+		done
+	elif sysctl -q hw.acpi.acline >/dev/null 2>/dev/null; then
+		case $(sysctl -n hw.acpi.acline) in
+			0) state=1;;
+			*) state=0;;
+		esac
+	else
+		return 255
+	fi
+	return [ $state != 128 ]
+}
+
+# function: wait_ac_power
+# parameter: {timeout} {AC power online device}
+#
+# wait until ac power goes online
+wait_ac_power() {
+	local timecount=0
+	local timeout=${1:-0}
+	local check=0
+
+	while true; do
+		check_power_status
+		case $? in
+			0)
+				return 0
+				;;
+			1)
+				;;
+			255)
+				case "$BTRFS_AC_POWER_ACTION_ON_UNKNOWN_STATUS" in
+					assume_no_ac_power)
+						return 1
+						;;
+					assume_ac_power)
+						return 0
+						;;
+					*)
+						# Continue
+						;;
+				esac
+				;;
+		esac
+		# AC is not online
+		[ $timeout -gt 0 ] && [ $timecount -ge $timeout ] && return 1
+		sleep 1s
+		timecount=$((timecount+1))
+	done
+
+	return 0
+}

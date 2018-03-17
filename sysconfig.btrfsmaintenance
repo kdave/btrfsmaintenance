@@ -7,6 +7,27 @@
 BTRFS_LOG_OUTPUT="stdout"
 
 ## Path:        System/File systems/btrfs
+## Type:        number
+## Default:     3600
+#
+# Second to wait the AC Power before to continue anyway
+BTRFS_AC_POWER_TIMEOUT=3600
+
+## Path:        System/File systems/btrfs
+## Type:        string(retry,assume_no_ac_power,assume_ac_power)
+## Default:     "retry"
+#
+# Default action when ac power status is unknown
+BTRFS_AC_POWER_ACTION_ON_UNKNOWN_STATUS="retry"
+
+## Path:        System/File systems/btrfs
+## Type:        string(continue,abort)
+## Default:     "abort"
+#
+# Default action when ac power status is unknown
+BTRFS_AC_POWER_ACTION_ON_NO_AC_POWER="abort"
+
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     ""
 #
@@ -30,6 +51,14 @@ BTRFS_DEFRAG_PERIOD="none"
 #
 # Minimal file size to consider for defragmentation
 BTRFS_DEFRAG_MIN_SIZE="+1M"
+
+## Path:        System/File systems/btrfs
+## Type:        boolean
+## Default:     "false"
+#
+# Wait AC Power before defrag
+BTRFS_DEFRAG_WAIT_AC_POWER="false"
+
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
@@ -73,6 +102,13 @@ BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"
 BTRFS_BALANCE_MUSAGE="1 5 10 20 30"
 
 ## Path:        System/File systems/btrfs
+## Type:        boolean
+## Default:     "false"
+#
+# Wait AC Power before balance
+BTRFS_BALANCE_WAIT_AC_POWER="false"
+
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     "/"
 #
@@ -104,6 +140,13 @@ BTRFS_SCRUB_PRIORITY="idle"
 # Do read-only scrub and don't try to repair anything.
 BTRFS_SCRUB_READ_ONLY="false"
 
+## Path:        System/File systems/btrfs
+## Type:        boolean
+## Default:     "false"
+#
+# Wait AC Power before scrub
+BTRFS_SCRUB_WAIT_AC_POWER="false"
+
 ## Path:           System/File systems/btrfs
 ## Description:    Configuration for periodic fstrim
 ## Type:           string(none,daily,weekly,monthly)
@@ -124,3 +167,10 @@ BTRFS_TRIM_PERIOD="none"
 # (Colon separated paths)
 # The special word/mountpoint "auto" will evaluate all mounted btrfs filesystems at runtime
 BTRFS_TRIM_MOUNTPOINTS="/"
+
+## Path:        System/File systems/btrfs
+## Type:        boolean
+## Default:     "false"
+#
+# Wait AC Power before trim
+BTRFS_TRIM_WAIT_AC_POWER="false"
