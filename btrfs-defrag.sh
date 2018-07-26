@@ -15,6 +15,7 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-defrag'
+. $(dirname $(realpath "$0"))/btrfsmaintenance-functions
 
 {
 OIFS="$IFS"
