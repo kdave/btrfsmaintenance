@@ -1,12 +1,7 @@
 #!/bin/sh
 #
-# Copyright (c) 2014 SuSE Linux AG, Nuernberg, Germany.
-#
-# please send bugfixes or comments to http://www.suse.de/feedback.
+# Copyright (c) 2017 SUSE LINUX GmbH, Nuernberg, Germany.
 
-#
-# paranoia settings
-#
 umask 022
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export PATH
@@ -20,7 +15,7 @@ if [ -f /etc/default/btrfsmaintenance ] ; then
 fi
 
 LOGIDENTIFIER='btrfs-balance'
-. $(dirname $(realpath $0))/btrfsmaintenance-functions
+. $(dirname $(realpath "$0"))/btrfsmaintenance-functions
 
 {
 evaluate_auto_mountpoint BTRFS_BALANCE_MOUNTPOINTS
@@ -29,7 +24,7 @@ IFS=:
 exec 2>&1 # redirect stderr to stdout to catch all output to log destination
 for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	IFS="$OIFS"
-	if [ $(stat -f --format=%T "$MM") != "btrfs" ]; then
+	if ! is_btrfs "$MM"; then
 		echo "Path $MM is not btrfs, skipping"
 		continue
 	fi

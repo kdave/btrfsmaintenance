@@ -1,0 +1,11 @@
+[Unit]
+Description=Defragment file data and/or directory metadata
+Documentation=man:btrfs-filesystem
+
+[Timer]
+OnCalendar=monthly
+AccuracySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

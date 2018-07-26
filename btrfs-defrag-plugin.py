@@ -2,29 +2,34 @@
 
 # This plugin defragments rpm files after update.
 #
-# If the filesystem is btrfs, run defrag command in /var/lib/rpm, set the
-# desired extent size to 64MiB, but this may change in the result depending
-# on the fragmentation of the free space
+# If the filesystem is btrfs, run defrag command in the RPM database
+# folder, set the desired extent size to 32MiB, but this may change in the
+# result depending on the fragmentation of the free space.
 #
-# Why 64MB:
+# Why 32MiB:
 # - the worst fragmentation has been observed on Packages
 # - this can grow up to several hundred of megabytes
 # - the file gets updated at random places
-# - although the file will be composed of several extents, it's faster to
+# - although the file will be composed of many extents, it's faster to
 #   merge only the extents that affect some portions of the file, instead
 #   of the whole file; the difference is negligible
 # - due to the free space fragmentation over time, it's hard to find
 #   contiguous space, the bigger the extent is, the worse and the extent
 #   size hint is not reached anyway
 
-from sys import stderr
+import sys
+if sys.version_info[0] >= 3:
+    from builtins import str
+    popen_kwargs = { 'encoding': 'ascii' }
+else:
+    popen_kwargs = { }
 from zypp_plugin import Plugin
 import subprocess
 
 DEBUG=False
-EXTENT_SIZE=64*1024*1024
+EXTENT_SIZE=32*1024*1024
 LOGFILE='/tmp/btrfs-defrag-plugin.log'
-PATH='/var/lib/rpm'
+PATH=subprocess.check_output(["rpm", "--eval", "%_dbpath"], **popen_kwargs).strip()
 
 def dbg(args):
     if not DEBUG: return
@@ -34,7 +39,7 @@ def dbg(args):
     f.close()
 
 def qx(args):
-    out=subprocess.Popen(args, shell=True, stdout=subprocess.PIPE).stdout
+    out=subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, **popen_kwargs).stdout
     outstr="".join(out.readlines())
     out.close()
     return outstr
@@ -59,6 +64,11 @@ class BtrfsDefragPlugin(Plugin):
     if DEBUG:
         dbg('--- Fragmentation before')
         dbg(qx('filefrag %s/*' % (PATH)))
+    # defrag options:
+    # - verbose
+    # - recursive
+    # - flush each file before going to the next one
+    # - set the extent target hint
     ret = qx('btrfs filesystem defragment -v -f -r -t %s "%s"' % \
             (str(EXTENT_SIZE), PATH))
     if DEBUG:

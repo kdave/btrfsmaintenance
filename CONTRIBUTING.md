@@ -12,6 +12,9 @@ when necessary.
 Backward compatibility is important to us. The scripts could be used on
 long-term supported distros but also in bleeding edge development environments.
 
+The shell code assumes the basic `sh` level, and no advanced trick should be
+used.
+
 
 #### Bug reports, feature requests ####
 

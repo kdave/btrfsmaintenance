@@ -10,7 +10,9 @@ BTRFS_LOG_OUTPUT="stdout"
 ## Type:        string
 ## Default:     ""
 #
-# Run periodic defrag on selected paths.
+# Run periodic defrag on selected paths. The files from a given path do not
+# cross mount points or other subvolumes/snapshots. If you want to defragment
+# nested subvolumes, all have to be listed in this variable.
 # (Colon separated paths)
 BTRFS_DEFRAG_PATHS=""
 

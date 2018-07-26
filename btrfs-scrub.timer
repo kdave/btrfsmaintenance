@@ -1,0 +1,11 @@
+[Unit]
+Description=Scrub btrfs filesystem, verify block checksums
+Documentation=man:btrfs-scrub
+
+[Timer]
+OnCalendar=monthly
+AccuracySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

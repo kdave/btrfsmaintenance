@@ -11,7 +11,7 @@
 # are put into the parameter variable
 evaluate_auto_mountpoint() {
 	MOUNTPOINTSVAR=\$"$1"
-	if [ "$(eval "expr \"$MOUNTPOINTSVAR\"")" = "auto" ]; then
+	if [ "$(eval expr \"$MOUNTPOINTSVAR\")" = "auto" ]; then
 		local BTRFS_DEVICES=""
 		local DEVICE=""
 		local MNT=""
@@ -65,4 +65,14 @@ check_balance_running() {
 		return 1
 	fi
 	return 0
+}
+
+# function: is_btrfs
+# parameter: path to a mounted filesystem
+#
+# check if filesystem is a btrfs
+is_btrfs() {
+	local FS=$(stat -f --format=%T "$1")
+	[ "$FS" = "btrfs" ] && return 0
+	return 1
 }

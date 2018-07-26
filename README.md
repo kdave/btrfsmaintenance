@@ -1,6 +1,11 @@
 Btrfs maintenance toolbox
 =========================
 
+Table of contents:
+* [Quick start](#quick-start)
+* [Distro integration](#distro-integration)
+* [Tuning periodic snapshotting](#tuning-periodic-snapshotting)
+
 This is a set of scripts supplementing the btrfs filesystem and aims to automate
 a few maintenance tasks. This means the *scrub*, *balance*, *trim* or
 *defragmentation*.
@@ -109,27 +114,49 @@ __Description:__ Run defragmentation on configured directories. This is for
 convenience and not necessary as defragmentation needs are usually different
 for various types of data.
 
+Please note that the defragmentation process does not descend to other mount
+points and nested subvolumes or snapshots. All nested paths would need to be
+enumerated in the respective config variable. The command utilizes `find
+-xdev`, you can use that to verify in advance which paths will the
+defragmentation affect.
+
 __Special case:__
 
 There's a separate defragmentation task that happens automatically and
-defragments only the RPM database files in */var/lib/rpm*. This is done via a
-*zypper* plugin and the defrag pass triggers at the end of the installation.
+defragments only the RPM database files. This is done via a *zypper* plugin
+and the defrag pass triggers at the end of the installation.
 
 This improves reading the RPM databases later, but the installation process
 fragments the files very quickly so it's not likely to bring a significant
 speedup here.
 
 
-## Other ##
+## Periodic scheduling ##
+
+There are now two ways how to schedule and run the periodic tasks: cron and
+systemd timers. Only one can be active on a system and this should be decided
+at the installation time.
+
+### Cron ###
 
 Cron takes care of periodic execution of the scripts, but they can be run any
 time directly from `/usr/share/btrfs/maintenance/`, respecting the configured
 values in `/etc/sysconfig/btrfsmaintenance`.
 
-If the period is changed manually, the cron symlinks have to be refreshed, use
-`systemctl restart btrfsmaintenance-refresh` (or the
-`rcbtrfsmaintenance-refresh` shortcut). Changing the period via *yast2* sysconfig
-editor triggers the refresh automatically.
+The changes to configuration file need to be refleced in the `/etc/cron`
+directories where the scripts are linked for the given period.
+
+If the period is changed, the cron symlinks have to be refreshed:
+
+* manually -- use `systemctl restart btrfsmaintenance-refresh` (or the `rcbtrfsmaintenance-refresh` shortcut)
+* in *yast2* -- sysconfig editor triggers the refresh automatically
+* using a file watcher -- if you install `btrfsmaintenance-refresh.path`, this will utilize the file monitor to detect changes and will run the refresh
+
+### Systemd timers ###
+
+There's a set of timer units that run the respective task script. The periods
+are configured in the `/etc/sysconfig/btrfsmaintenance` file as well. The
+timers have to be installed using a similar way as cron.
 
 
 ## Quick start ##
@@ -169,6 +196,10 @@ The script `btrfsmaintenance-refresh-cron.sh` will synchronize the symlinks
 according to the configuration files. This can be called automatically by a GUI
 configuration tool if it's capable of running post-change scripts or services.
 In that case there's `btrfsmaintenance-refresh.service` systemd service.
+
+This service can also be automatically started upon any modification of the
+configuration file in `/etc/sysconfig/btrfsmaintenance` by installing the
+`btrfsmaintenance-refresh.path` systemd watcher.
 
 ### Post-update defragmentation ###
 
@@ -298,6 +329,7 @@ Suggested values:
 
     TIMELINE_LIMIT_HOURLY="12"
     TIMELINE_LIMIT_DAILY="5"
+    TIMELINE_LIMIT_WEEKLY="2"
     TIMELINE_LIMIT_MONTHLY="1"
     TIMELINE_LIMIT_YEARLY="0"
 
@@ -315,6 +347,7 @@ Suggested values:
 
     TIMELINE_LIMIT_HOURLY="12"
     TIMELINE_LIMIT_DAILY="7"
+    TIMELINE_LIMIT_WEEKLY="4"
     TIMELINE_LIMIT_MONTHLY="6"
     TIMELINE_LIMIT_YEARLY="1"
 
@@ -327,6 +360,7 @@ Suggested values:
 
     TIMELINE_LIMIT_HOURLY="12"
     TIMELINE_LIMIT_DAILY="7"
+    TIMELINE_LIMIT_WEEKLY="4"
     TIMELINE_LIMIT_MONTHLY="6"
     TIMELINE_LIMIT_YEARLY="0"
 
@@ -351,8 +385,18 @@ Starting point:
 
     TIMELINE_LIMIT_HOURLY="12"
     TIMELINE_LIMIT_DAILY="7"
+    TIMELINE_LIMIT_WEEKLY="1"
     TIMELINE_LIMIT_MONTHLY="0"
     TIMELINE_LIMIT_YEARLY="0"
+
+### Summary
+
+|  Type       |  Hourly  |  Daily  |  Weekly  |  Monthly  |  Yearly  |
+--- | ---: | ---: | ---: | ---: | ---: |
+|  Rolling    |  12      |  5      |  2       |  1        |  0       |
+|  Regular    |  12      |  7      |  4       |  6        |  1       |
+|  Big files  |  12      |  7      |  4       |  6        |  0       |
+|  Mixed      |  12      |  7      |  1       |  0        |  0       |
 
 ## About ##
 
