@@ -70,6 +70,26 @@ EOF
 	esac
 }
 
+#
+# Add "ConditionPathIsReadWrite=" for each mount point.
+#
+refresh_conditions() {
+    MOUNT_POINTS="$1"
+    SERVICE="$2"
+    if [ -z "$MOUNT_POINTS" ]; then
+        rm -rf /etc/systemd/system/${SERVICE}.service.d
+    else
+        mkdir -p /etc/systemd/system/${SERVICE}.service.d/
+        echo "[Unit]" > /etc/systemd/system/${SERVICE}.service.d/readwrite.conf
+        OIFS="$IFS"
+        IFS=:
+        for mount_point in $MOUNT_POINTS; do
+            echo "ConditionPathIsReadWrite=$mount_point" >> /etc/systemd/system/${SERVICE}.service.d/readwrite.conf
+        done
+        IFS="$OIFS"
+    fi
+}
+
 if [ "$1" = 'uninstall' ]; then
 	for SCRIPT in btrfs-scrub btrfs-defrag btrfs-balance btrfs-trim; do
 		case "$BTRFS_TIMER_IMPLEMENTATION" in
@@ -94,6 +114,11 @@ case "$BTRFS_TIMER_IMPLEMENTATION" in
 		refresh_timer "$BTRFS_DEFRAG_PERIOD" btrfs-defrag
 		refresh_timer "$BTRFS_BALANCE_PERIOD" btrfs-balance
 		refresh_timer "$BTRFS_TRIM_PERIOD" btrfs-trim
+                refresh_conditions "$BTRFS_BALANCE_MOUNTPOINTS" btrfs-balance
+                refresh_conditions "$BTRFS_SCRUB_MOUNTPOINTS" btrfs-scrub
+                refresh_conditions "$BTRFS_TRIM_MOUNTPOINTS" btrfs-trim
+                refresh_conditions "$BTRFS_DEFRAG_PATHS" btrfs-defrag
+                systemctl daemon-reload
 		;;
 	*)
 		refresh_cron "$BTRFS_SCRUB_PERIOD" btrfs-scrub.sh
