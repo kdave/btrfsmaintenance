@@ -1,7 +1,7 @@
 #
 # spec file for package btrfsmaintenance
 #
-# Copyright (c) 2017 SUSE LINUX GmbH, Nuernberg, Germany.
+# Copyright (c) 2018 SUSE LINUX GmbH, Nuernberg, Germany.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -25,7 +25,7 @@ Name:           btrfsmaintenance
 Version:        0.4.1
 Release:        0
 Summary:        Scripts for btrfs periodic maintenance tasks
-License:        GPL-2.0
+License:        GPL-2.0-only
 Group:          System/Base
 Url:            https://github.com/kdave/btrfsmaintenance
 Source0:        %{name}-%{version}.tar.bz2
@@ -39,7 +39,8 @@ BuildArch:      noarch
 
 %description
 Scripts for btrfs maintenance tasks like periodic scrub, balance, trim or defrag
-on selected mountpoints or directories.
+on selected mountpoints or directories. Hints for periodic snapshot tuning (eg.
+for snapper).
 
 %prep
 %setup -q
@@ -59,6 +60,7 @@ install -m 644 btrfsmaintenance-functions %{buildroot}%{_datadir}/%{name}
 # systemd services and timers
 install -m 755 -d %{buildroot}%{_unitdir}
 install -m 644 -D btrfsmaintenance-refresh.service %{buildroot}%{_unitdir}
+install -m 644 -D btrfsmaintenance-refresh.path %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-balance.service %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-defrag.service %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-scrub.service %{buildroot}%{_unitdir}
@@ -82,20 +84,22 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_fillupdir}
 # if the new service files don't exist, we migrate from
 # old version with old script, remove cron symlinks
 [ ! -f %{_unitdir}/btrfs-balance.timer -a -f %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh ]  && %{_datadir}/%{name}/btrfsmaintenance-refresh-cron.sh uninstall
-%service_add_pre btrfsmaintenance-refresh.service btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
+%service_add_pre btrfsmaintenance-refresh.service btrfsmaintenance-refresh.path btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
 
 %post
-%service_add_post btrfsmaintenance-refresh.service btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
+%service_add_post btrfsmaintenance-refresh.service btrfsmaintenance-refresh.path btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
 %{fillup_only btrfsmaintenance}
 
 %preun
-%service_del_preun btrfsmaintenance-refresh.service btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
+%service_del_preun btrfsmaintenance-refresh.service btrfsmaintenance-refresh.path btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
 
 %postun
-%service_del_postun btrfsmaintenance-refresh.service btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
+%service_del_postun btrfsmaintenance-refresh.service btrfsmaintenance-refresh.path btrfs-balance.service btrfs-balance.timer btrfs-defrag.service btrfs-defrag.timer btrfs-scrub.service btrfs-scrub.timer btrfs-trim.service btrfs-trim.timer
 
 %files
-%doc COPYING README.md
+%license COPYING
+%dir /usr/share/licenses
+%doc README.md
 %{_fillupdir}/sysconfig.btrfsmaintenance
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*
@@ -103,6 +107,7 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_fillupdir}
 %dir %{_libexecdir}/zypp/plugins
 %dir %{_libexecdir}/zypp/plugins/commit
 %{_libexecdir}/zypp/plugins/commit/btrfs-defrag-plugin.py
+%{_unitdir}/btrfsmaintenance-refresh.path
 %{_unitdir}/btrfsmaintenance-refresh.service
 %{_unitdir}/btrfs-balance.service
 %{_unitdir}/btrfs-defrag.service
