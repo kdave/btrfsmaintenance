@@ -29,5 +29,10 @@ install -oroot -groot -m755 btrfs-*.sh /usr/share/btrfsmaintenance/
 install -oroot -groot -m644 btrfsmaintenance-functions /usr/share/btrfsmaintenance/
 
 echo "Installation path: $sysconfdir"
-echo "Now edit cron periods and mount points in $sysconfdir/btrfsmaintenance then run ./btrfsmaintenance-refresh-cron.sh to update cron symlinks
-"
+echo "For cron-based setups:"
+echo "- edit cron periods and mount points in $sysconfdir/btrfsmaintenance"
+echo "- run ./btrfsmaintenance-refresh-cron.sh to update cron symlinks"
+echo ""
+echo "For systemd.timer-based setups:"
+echo "- copy *.timer files to the systemd.unit path (eg. /usr/lib/systemd/system/ or /etc/systemd/system)"
+echo "- run './btrfsmaintenance-refresh-cron.sh timer' to enable and schedule the timers"
