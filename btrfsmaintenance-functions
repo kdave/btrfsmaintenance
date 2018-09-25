@@ -3,23 +3,24 @@
 # this file contains common code for the btrfs maintenance scripts
 #
 
-# function: evaluate_auto_mountpoint
-# parameter: A variable name
+# function: expand_auto_mountpoint
+# parameter: path list from config variable or 'auto'
 #
-# this function checks whether the variable contains the special keyword "auto"
-# if yes, all currently mounted btrfs filesystems are evaluated and their mountpoints
-# are put into the parameter variable
-evaluate_auto_mountpoint() {
-	MOUNTPOINTSVAR=\$"$1"
-	if [ "$(eval expr \"$MOUNTPOINTSVAR\")" = "auto" ]; then
+# if the parameter is 'auto', this function prints path list of all btrfs
+# mountpoints, otherwise prints the parameter unchanged
+expand_auto_mountpoint() {
+	local MNTLIST="$1"
+
+	if [ "$MNTLIST" = "auto" ]; then
 		local BTRFS_DEVICES=""
 		local DEVICE=""
 		local MNT=""
-		local MNTLIST=""
+
 		# find all mounted btrfs filesystems, print their device nodes, sort them
 		# and remove identical entries
 		BTRFS_DEVICES=$(findmnt --types btrfs --output "SOURCE" --nofsroot --noheading | sort | uniq)
 		# find one (and only one) corresponding mountpoint for each btrfs device node
+		MNTLIST=""
 		for DEVICE in $BTRFS_DEVICES; do
 			MNT=$(findmnt --types btrfs --first-only --noheadings --output "TARGET" --source "$DEVICE")
 			if [ -n "$MNTLIST" ]; then
@@ -28,9 +29,8 @@ evaluate_auto_mountpoint() {
 				MNTLIST="$MNT"
 			fi
 		done
-		echo "evaluate mounted filesystems: $MNTLIST"
-		eval "$1=$MNTLIST"
 	fi
+	echo -n "$MNTLIST"
 }
 
 # function: detect_mixed_bg
