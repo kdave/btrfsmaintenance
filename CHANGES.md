@@ -1,3 +1,9 @@
+version 0.4.2 (2018-09-25)
+- CVE-2018-14722: expand auto mountpoints in a safe way
+- btrfs-defrag: fix missing function to detect btrfs filesystems (#52)
+- btrfs-trim: more verbose fstrim output (#60)
+- dist-install: print information about timer unit installation (#58)
+
 version 0.4.1 (2018-03-15)
 - defrag plugin: python2 and 3 compatibility
 - defrag plugin: target extent size lowered to 32MiB (#43)
