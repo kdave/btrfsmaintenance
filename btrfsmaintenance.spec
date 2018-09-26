@@ -59,6 +59,7 @@ install -m 644 btrfsmaintenance-functions %{buildroot}%{_datadir}/%{name}
 
 # systemd services and timers
 install -m 755 -d %{buildroot}%{_unitdir}
+install -m 755 -d %{buildroot}%{_presetdir}
 install -m 644 -D btrfsmaintenance-refresh.service %{buildroot}%{_unitdir}
 install -m 644 -D btrfsmaintenance-refresh.path %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-balance.service %{buildroot}%{_unitdir}
@@ -70,6 +71,7 @@ install -m 644 -D btrfs-defrag.timer %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-scrub.timer %{buildroot}%{_unitdir}
 install -m 644 -D btrfs-trim.timer %{buildroot}%{_unitdir}
 install -m 755 -d %{buildroot}%{_sbindir}
+install -m 644 -D 80-btrfsmaintenance.preset %{buildroot}%{_presetdir}
 ln -s %{_sbindir}/service %{buildroot}%{_sbindir}/rcbtrfsmaintenance-refresh
 
 # zypp plugin
@@ -117,6 +119,7 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_fillupdir}
 %{_unitdir}/btrfs-defrag.timer
 %{_unitdir}/btrfs-scrub.timer
 %{_unitdir}/btrfs-trim.timer
+%{_presetdir}/80-btrfsmaintenance.preset
 %{_sbindir}/rcbtrfsmaintenance-refresh
 
 %changelog
