@@ -17,6 +17,12 @@ fi
 LOGIDENTIFIER='btrfs-balance'
 . $(dirname $(realpath "$0"))/btrfsmaintenance-functions
 
+ioprio=
+if [ "$BTRFS_BALANCE_PRIORITY" = "idle" ]; then
+	# ionice(3) idle proirity
+	ioprio="ionice -c 3"
+fi
+
 {
 BTRFS_BALANCE_MOUNTPOINTS=$(expand_auto_mountpoint "$BTRFS_BALANCE_MOUNTPOINTS")
 OIFS="$IFS"
@@ -33,7 +39,7 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	df -H "$MM"
 
 	if detect_mixed_bg "$MM"; then
-		btrfs balance start -musage=0 -dusage=0 "$MM"
+		$ioprio btrfs balance start -musage=0 -dusage=0 "$MM"
 		# we use the MUSAGE values for both, supposedly less aggressive
 		# values, but as the data and metadata space is shared on
 		# mixed-bg this does not lead to the situations we want to
@@ -41,18 +47,18 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 		# blockgroups)
 		for BB in $BTRFS_BALANCE_MUSAGE; do
 			# quick round to clean up the unused block groups
-			btrfs balance start -v -musage=$BB -dusage=$BB "$MM"
+			$ioprio btrfs balance start -v -musage=$BB -dusage=$BB "$MM"
 		done
 	else
-		btrfs balance start -dusage=0 "$MM"
+		$ioprio btrfs balance start -dusage=0 "$MM"
 		for BB in $BTRFS_BALANCE_DUSAGE; do
 			# quick round to clean up the unused block groups
-			btrfs balance start -v -dusage=$BB "$MM"
+			$ioprio btrfs balance start -v -dusage=$BB "$MM"
 		done
-		btrfs balance start -musage=0 "$MM"
+		$ioprio btrfs balance start -musage=0 "$MM"
 		for BB in $BTRFS_BALANCE_MUSAGE; do
 			# quick round to clean up the unused block groups
-			btrfs balance start -v -musage="$BB" "$MM"
+			$ioprio btrfs balance start -v -musage="$BB" "$MM"
 		done
 	fi
 
