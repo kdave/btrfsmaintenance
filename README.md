@@ -66,6 +66,10 @@ the same set of blocks is affected.
 
 The balance command uses filters to do the work in smaller batches.
 
+The impact with quota groups enabled can be extreme.  The balance operation
+performs quota group accounting for every extent being relocated, which can
+have the impact of stalling the file system for an extended period of time.
+
 __Expected result:__ If possible all the underused chunks are removed, the
 value of `total` in output of `btrfs fi df /path` should be lower than before.
 Check the logs.
