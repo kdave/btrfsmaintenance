@@ -48,7 +48,7 @@ BTRFS_BALANCE_MOUNTPOINTS="/"
 ## ServiceRestart: btrfsmaintenance-refresh
 #
 # Frequency of periodic balance.
-BTRFS_BALANCE_PERIOD="weekly"
+BTRFS_BALANCE_PERIOD="none"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
