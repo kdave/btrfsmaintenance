@@ -48,6 +48,10 @@ BTRFS_BALANCE_MOUNTPOINTS="/"
 ## ServiceRestart: btrfsmaintenance-refresh
 #
 # Frequency of periodic balance.
+#
+# The frequency may be specified using one of the listed values or
+# in the format documented in the "Calendar Events" section of systemd.time(7),
+# if available.
 BTRFS_BALANCE_PERIOD="weekly"
 
 ## Path:        System/File systems/btrfs
@@ -89,6 +93,10 @@ BTRFS_SCRUB_MOUNTPOINTS="/"
 ## ServiceRestart: btrfsmaintenance-refresh
 #
 # Frequency of periodic scrub.
+#
+# The frequency may be specified using one of the listed values or
+# in the format documented in the "Calendar Events" section of systemd.time(7),
+# if available.
 BTRFS_SCRUB_PERIOD="monthly"
 
 ## Path:        System/File systems/btrfs
@@ -115,6 +123,10 @@ BTRFS_SCRUB_READ_ONLY="false"
 # Frequency of periodic trim. Off by default so it does not collide with
 # fstrim.timer . If you do not use the timer, turn it on here. The recommended
 # period is 'weekly'.
+#
+# The frequency may be specified using one of the listed values or
+# in the format documented in the "Calendar Events" section of systemd.time(7),
+# if available.
 BTRFS_TRIM_PERIOD="none"
 
 ## Path:        System/File systems/btrfs
