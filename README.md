@@ -156,7 +156,9 @@ If the period is changed, the cron symlinks have to be refreshed:
 
 There's a set of timer units that run the respective task script. The periods
 are configured in the `/etc/sysconfig/btrfsmaintenance` file as well. The
-timers have to be installed using a similar way as cron.
+timers have to be installed using a similar way as cron.  Please note that the
+'*.timer' and respective '*.service' files have to be installed so the timers
+work properly.
 
 
 ## Quick start ##
