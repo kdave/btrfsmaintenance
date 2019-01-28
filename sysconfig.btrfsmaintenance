@@ -51,6 +51,14 @@ BTRFS_BALANCE_MOUNTPOINTS="/"
 BTRFS_BALANCE_PERIOD="weekly"
 
 ## Path:        System/File systems/btrfs
+## Type:        string(idle,normal)
+## Default:     "idle"
+#
+# Priority of IO at which the balance process will run. Idle should not degrade
+# performance as much as normal.
+BTRFS_BALANCE_PRIORITY="normal"
+
+## Path:        System/File systems/btrfs
 ## Type:        string
 ## Default:     "1 5 10 20 30 40 50"
 #
