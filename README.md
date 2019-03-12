@@ -188,7 +188,7 @@ do manual installation of files as described below.
 * `sysconfig.btrfsmaintenance` configuration template is put to:
  * `/etc/sysconfig/btrfsmaintenance` on SUSE and RedHat based systems or derivatives
  * `/etc/default/btrfsmaintenance` on Debian and derivatives
-* `/usr/lib/zypp/plugins/commit/btrfs-defrag-plugin.py` post-update script for
+* `/usr/lib/zypp/plugins/commit/btrfs-defrag-plugin.sh` post-update script for
   zypper (the package manager), applies to SUSE-based distros for now
 * cron refresh scripts are installed (see bellow)
 
@@ -212,7 +212,7 @@ configuration file in `/etc/sysconfig/btrfsmaintenance` by installing the
 The package database files tend to be updated in a random way and get
 fragmented, which particularly hurts on btrfs. For rpm-based distros this means files
 in `/var/lib/rpm`. The script or plugin simpy runs a defragmentation on the affected files.
-See `btrfs-defrag-plugin.py` for more details.
+See `btrfs-defrag-plugin.sh` for more details.
 
 At the moment the 'zypper' package manager plugin exists. As the package
 managers differ significantly, there's no single plugin/script to do that.

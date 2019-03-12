@@ -74,7 +74,7 @@ ln -s %{_sbindir}/service %{buildroot}%{_sbindir}/rcbtrfsmaintenance-refresh
 
 # zypp plugin
 install -m 755 -d %{buildroot}%{_libexecdir}/zypp/plugins/commit
-install -m 755 -D btrfs-defrag-plugin.py %{buildroot}%{_libexecdir}/zypp/plugins/commit
+install -m 755 -D btrfs-defrag-plugin.sh %{buildroot}%{_libexecdir}/zypp/plugins/commit
 
 # config
 install -m 755 -d %{buildroot}%{_fillupdir}
@@ -106,7 +106,7 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_fillupdir}
 %dir %{_libexecdir}/zypp/
 %dir %{_libexecdir}/zypp/plugins
 %dir %{_libexecdir}/zypp/plugins/commit
-%{_libexecdir}/zypp/plugins/commit/btrfs-defrag-plugin.py
+%{_libexecdir}/zypp/plugins/commit/btrfs-defrag-plugin.sh
 %{_unitdir}/btrfsmaintenance-refresh.path
 %{_unitdir}/btrfsmaintenance-refresh.service
 %{_unitdir}/btrfs-balance.service
