@@ -33,6 +33,7 @@ BuildRequires:  systemd
 Requires:       btrfsprogs
 Requires:       zypp-plugin-python
 Requires:       libzypp(plugin:commit)
+Requires:       util-linux
 Supplements:    btrfsprogs
 BuildArch:      noarch
 %{?systemd_requires}

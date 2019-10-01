@@ -5,6 +5,7 @@ After=fstrim.service btrfs-trim.service btrfs-scrub.service
 
 [Service]
 Type=simple
-ExecStart=/usr/share/btrfsmaintenance/btrfs-defrag.sh
+SyslogIdentifier=btrfs-defrag.sh
+ExecStart=/usr/bin/flock /run/btrfs-maintenance-running /usr/share/btrfsmaintenance/btrfs-defrag.sh
 IOSchedulingClass=idle
 CPUSchedulingPolicy=idle

@@ -5,6 +5,7 @@ Conflicts=fstrim.service
 
 [Service]
 Type=simple
-ExecStart=/usr/share/btrfsmaintenance/btrfs-trim.sh
+SyslogIdentifier=btrfs-trim.sh
+ExecStart=/usr/bin/flock /run/btrfs-maintenance-running /usr/share/btrfsmaintenance/btrfs-trim.sh
 IOSchedulingClass=idle
 CPUSchedulingPolicy=idle
