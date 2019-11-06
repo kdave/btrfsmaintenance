@@ -40,7 +40,7 @@ for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 		echo "Path $MNT is not btrfs, skipping"
 		continue
 	fi
-	btrfs scrub start -Bd $ioprio $readonly "$MNT"
+	run_task btrfs scrub start -Bd $ioprio $readonly "$MNT"
 	if [ "$?" != "0" ]; then
 		echo "Scrub cancelled at $MNT"
 		exit 1

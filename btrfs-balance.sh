@@ -33,7 +33,7 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 	df -H "$MM"
 
 	if detect_mixed_bg "$MM"; then
-		btrfs balance start -musage=0 -dusage=0 "$MM"
+		run_task btrfs balance start -musage=0 -dusage=0 "$MM"
 		# we use the MUSAGE values for both, supposedly less aggressive
 		# values, but as the data and metadata space is shared on
 		# mixed-bg this does not lead to the situations we want to
@@ -41,18 +41,18 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 		# blockgroups)
 		for BB in $BTRFS_BALANCE_MUSAGE; do
 			# quick round to clean up the unused block groups
-			btrfs balance start -v -musage=$BB -dusage=$BB "$MM"
+			run_task btrfs balance start -v -musage=$BB -dusage=$BB "$MM"
 		done
 	else
-		btrfs balance start -dusage=0 "$MM"
+		run_task btrfs balance start -dusage=0 "$MM"
 		for BB in $BTRFS_BALANCE_DUSAGE; do
 			# quick round to clean up the unused block groups
-			btrfs balance start -v -dusage=$BB "$MM"
+			run_task btrfs balance start -v -dusage=$BB "$MM"
 		done
-		btrfs balance start -musage=0 "$MM"
+		run_task btrfs balance start -musage=0 "$MM"
 		for BB in $BTRFS_BALANCE_MUSAGE; do
 			# quick round to clean up the unused block groups
-			btrfs balance start -v -musage="$BB" "$MM"
+			run_task btrfs balance start -v -musage="$BB" "$MM"
 		done
 	fi
 

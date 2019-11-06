@@ -29,7 +29,7 @@ for MNT in $BTRFS_TRIM_MOUNTPOINTS; do
 		continue
 	fi
 	echo "Running fstrim on $MNT"
-	fstrim --verbose "$MNT"
+	run_task fstrim --verbose "$MNT"
 done
 
 } | \

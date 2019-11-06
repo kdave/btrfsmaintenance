@@ -139,3 +139,16 @@ BTRFS_TRIM_PERIOD="none"
 # The special word/mountpoint "auto" will evaluate all mounted btrfs
 # filesystems
 BTRFS_TRIM_MOUNTPOINTS="/"
+
+## Path:	System/File systems/btrfs
+## Description:	Configuration to allow concurrent jobs
+## Type: 	boolean
+## Default:	"false"
+#
+# These maintenance tasks may compete for resources with each other, blocking
+# out other tasks from using the file systems.  This option will force
+# these jobs to run in FIFO order when scheduled at overlapping times.  This
+# may include tasks scheduled to run when a system resumes or boots when
+# the timer for these tasks(s) elapsed while the system was suspended
+# or powered off.
+BTRFS_ALLOW_CONCURRENCY="false"

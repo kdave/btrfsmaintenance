@@ -76,3 +76,27 @@ is_btrfs() {
 	[ "$FS" = "btrfs" ] && return 0
 	return 1
 }
+
+# function: btrfs_fsid
+# parameter: path to a mounted filesystem
+#
+# return filesystem UUID on a given path
+btrfs_fsid() {
+	btrfs filesystem show "$1" | sed -n -e '/uuid:/ {s/^.*uuid: //;p }'
+}
+
+# function: run_task
+# parameter: command to run, expecting the mountpoint to be the last argument
+#
+# run the given command with concurrency protection unless allowed by the
+# config, use for tasks that should not run at the same time due to heavy IO
+run_task() {
+	MNT="${@:$#}"
+	UUID=$(btrfs_fsid "$MNT")
+
+	if test "$BTRFS_ALLOW_CONCURRENCY" = "true"; then
+		"$@"
+	else
+		/usr/bin/flock --verbose /run/btrfs-maintenance-running."$UUID" "$@"
+	fi
+}
