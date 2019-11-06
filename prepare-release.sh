@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 base=btrfsmaintenance
 version=$(grep -i ^version: ${base}.spec | awk '{print $2}')

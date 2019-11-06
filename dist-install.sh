@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # usage: $0 [sysconfdir]
 #
 # Install configuration template, documentation and scripts. Target path is

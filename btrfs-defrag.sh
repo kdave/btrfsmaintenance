@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright (c) 2018 SUSE LINUX GmbH, Nuernberg, Germany.
 
