@@ -1,5 +1,6 @@
 [Unit]
 Description=Watch /etc/sysconfig/btrfsmaintenance
+After=local-fs.target
 
 [Path]
 PathChanged=/etc/sysconfig/btrfsmaintenance
