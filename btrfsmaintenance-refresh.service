@@ -1,11 +1,9 @@
 [Unit]
 Description=Update cron periods from /etc/sysconfig/btrfsmaintenance
-After=local-fs.target
 
 [Service]
 ExecStart=/usr/share/btrfsmaintenance/btrfsmaintenance-refresh-cron.sh systemd-timer
 Type=oneshot
 
 [Install]
-Also=btrfsmaintenance-refresh.path
 WantedBy=multi-user.target
