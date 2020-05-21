@@ -85,13 +85,29 @@ __Tuning:__
   `BTRFS_BALANCE_DUSAGE` or `BTRFS_BALANCE_MUSAGE`. Higher value means bigger
   impact on your system and becomes very noticeable.
 * the metadata chunks usage pattern is different from data and it's not
-  necessary to reclaim metadata block groups that are more than 50 full. The
-  default maximum is 30 which should not degrade performance too much but may
+  necessary to reclaim metadata block groups that are more than 30 full. The
+  default maximum is 10 which should not degrade performance too much but may
   be suboptimal if the metadata usage varies wildly over time. The assumption
   is that underused metadata chunks will get used at some point so it's not
   absolutely required to do the reclaim.
 * the useful period highly depends on the overall data change pattern on the
   filesystem
+
+__Changed defaults since 0.5:__
+
+Versions up to 0.4.2 had usage filter set up to 50% for data and up to 30% for
+metadata.  Based on user feedback, the numbers have been reduced to 30% (data)
+and 10% (metadata). The system load during the balance service will be smaller
+and the result of space compaction still reasonable. Multiple data chunks filled
+to less than 30% can be merged into fewer chunks. The file data can change in
+large volumes, eg. deleting a big file can free a lot of space. If the space is
+left unused for the given period, it's desirable to make it more compact.
+Metadata consumption follows a different pattern and reclaiming only the almost
+unused chunks makes more sense, otherwise there's enough reserved metadata
+space for operations like reflink or snapshotting.
+
+A convenience script is provided to update the unchanged defaults,
+`/usr/share/btrfsmaintenance/update-balance-usage-defaults.sh` .
 
 ### trim ###
 
