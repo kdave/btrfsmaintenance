@@ -22,10 +22,10 @@ your needs, please adjust the settings.
 
 __Description:__ Scrub operation reads all data and metadata from the devices
 and verifies the checksums. It's not mandatory, but may point out problems with
-faulty hardware early as it touches data that might not be in use and bitrot.
+faulty hardware early as it touches data that might not be in use and bit rot.
 
-If thre's a redundancy of data/metadata, ie. the *DUP* or *RAID1/5/6* profiles, scrub
-is able to repair the data autmatically if there's a good copy available.
+If there's a redundancy of data/metadata, ie. the *DUP* or *RAID1/5/6* profiles, scrub
+is able to repair the data automatically if there's a good copy available.
 
 __Impact when active:__ Intense read operations take place and may slow down or
 block other filesystem activies, possibly only for short periods.
@@ -61,7 +61,7 @@ workspace we mean device space that has no filesystem chunks on it, not to be
 confused by free space as reported eg. by `df`.
 
 __Impact when active:__ Possibly big. There's a mix of read and write operations, is
-seek-heavy on a rotational devices. This can interfere with other work in case
+seek-heavy on rotational devices. This can interfere with other work in case
 the same set of blocks is affected.
 
 The balance command uses filters to do the work in smaller batches.
@@ -76,7 +76,7 @@ value of `total` in output of `btrfs fi df /path` should be lower than before.
 Check the logs.
 
 The balance command may fail with *no space* reason but this is considered a
-minor fault as the internal filesystem layout may prevent fhe command to find
+minor fault as the internal filesystem layout may prevent the command to find
 enough workspace. This might be a time for manual inspection of space.
 
 __Tuning:__
@@ -89,7 +89,7 @@ __Tuning:__
   default maximum is 30 which should not degrade performance too much but may
   be suboptimal if the metadata usage varies wildly over time. The assumption
   is that underused metadata chunks will get used at some point so it's not
-  absolutelly required to do the reclaim.
+  absolutely required to do the reclaim.
 * the useful period highly depends on the overall data change pattern on the
   filesystem
 
@@ -100,7 +100,7 @@ optimize blocks that are not used by the filesystem. This task is performed
 on-demand by the *fstrim* utility.
 
 This makes sense for SSD devices or other type of storage that can translate
-the TRIM action to someting useful (eg. thin-provisioned storage).
+the TRIM action to something useful (eg. thin-provisioned storage).
 
 __Impact when active:__ Should be low, but depends on the amount of blocks
 being trimmed.
@@ -145,10 +145,10 @@ at the installation time.
 ### Cron ###
 
 Cron takes care of periodic execution of the scripts, but they can be run any
-time directly from `/usr/share/btrfs/maintenance/`, respecting the configured
+time directly from `/usr/share/btrfsmaintenance/`, respecting the configured
 values in `/etc/sysconfig/btrfsmaintenance`.
 
-The changes to configuration file need to be refleced in the `/etc/cron`
+The changes to configuration file need to be reflected in the `/etc/cron`
 directories where the scripts are linked for the given period.
 
 If the period is changed, the cron symlinks have to be refreshed:
@@ -168,8 +168,8 @@ work properly.
 
 ## Quick start ##
 
-The tasks' periods and other parameters should fit most usecases and do not
-need to be touched. Review the mountpoints (variables ending with
+The tasks' periods and other parameters should fit most use cases and do not
+need to be touched. Review the mount points (variables ending with
 `_MOUNTPOINTS`) whether you want to run the tasks there or not.
 
 ## Distro integration ##
@@ -216,7 +216,7 @@ configuration file in `/etc/sysconfig/btrfsmaintenance` by installing the
 
 The package database files tend to be updated in a random way and get
 fragmented, which particularly hurts on btrfs. For rpm-based distros this means files
-in `/var/lib/rpm`. The script or plugin simpy runs a defragmentation on the affected files.
+in `/var/lib/rpm`. The script or plugin simply runs a defragmentation on the affected files.
 See `btrfs-defrag-plugin.sh` or `btrfs-defrag-plugin.py` for more details.
 
 At the moment the 'zypper' package manager plugin exists. As the package
@@ -247,14 +247,14 @@ Snapper is a tool to manage snapshots of btrfs subvolumes. It can create
 snapshots of given subvolume manually, periodically or in a pre/post way for
 a given command. It can be configured to retain existing snapshots according
 to time-based settings. As the retention policy can be very different for
-various usecases, we need to be able to find matching settings.
+various use cases, we need to be able to find matching settings.
 
 The settings should satisfy user's expectation about storing previous copies of
 the subvolume but not taking too much space. In an extreme, consuming the whole
 filesystem space and preventing some operations to finish.
 
 In order to avoid such situations, the snapper settings should be tuned according
-to the expected usecase and filesystem size.
+to the expected use case and filesystem size.
 
 ### Sample problem ###
 
@@ -279,7 +279,7 @@ gone.
 
 ### Tuning
 
-The administrator/user is suppsed to know the approximate use of the partition
+The administrator/user is supposed to know the approximate use of the partition
 with snapshots enabled.
 
 The decision criteria for tuning is space consumption and we're optimizing to
@@ -329,7 +329,7 @@ few gigabytes is more likely to lead to no-space conditions, so it's a good
 time to delete old snapshots or review the snapper settings.
 
 
-### Typical usecases
+### Typical use cases
 
 #### A rolling distro
 
