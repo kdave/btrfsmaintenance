@@ -18,6 +18,13 @@ Overall tuning of the default values should give a good balance between effects
 of the tasks and low impact of other work on the system. If this does not fit
 your needs, please adjust the settings.
 
+## Tasks ##
+
+The following sections will describe the tasks in detail. There's one config
+option that affects the task concurrency, `BTRFS_ALLOW_CONCURRENCY`. This is
+to avoid extra high resource consumption or unexpected interaction among the
+tasks and will serialize them in the order they're started by timers.
+
 ### scrub ###
 
 __Description:__ Scrub operation reads all data and metadata from the devices
