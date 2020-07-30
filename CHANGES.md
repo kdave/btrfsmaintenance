@@ -1,3 +1,17 @@
+version 0.5 (2020-07-30)
+
+- sysconfig:
+  - change defaults of MUSAGE and DUSAGE for balance task to do less work,
+    with a script to switch from existing unmodified defaults to new ones
+  - document systemd.timer syntax
+- make balance, scrub, and trim mutually exclusive tasks
+- service file updates:
+  - delete Install section
+- defrag-plugin:
+  - switch to python3
+  - add alternative shell implementation of the plugin
+- installation docs update
+
 version 0.4.2 (2018-09-25)
 - CVE-2018-14722: expand auto mountpoints in a safe way
 - btrfs-defrag: fix missing function to detect btrfs filesystems (#52)
