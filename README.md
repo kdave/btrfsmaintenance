@@ -103,10 +103,10 @@ __Tuning:__
 __Changed defaults since 0.5:__
 
 Versions up to 0.4.2 had usage filter set up to 50% for data and up to 30% for
-metadata.  Based on user feedback, the numbers have been reduced to 30% (data)
-and 10% (metadata). The system load during the balance service will be smaller
+metadata.  Based on user feedback, the numbers have been reduced to 10% (data)
+and 5% (metadata). The system load during the balance service will be smaller
 and the result of space compaction still reasonable. Multiple data chunks filled
-to less than 30% can be merged into fewer chunks. The file data can change in
+to less than 10% can be merged into fewer chunks. The file data can change in
 large volumes, eg. deleting a big file can free a lot of space. If the space is
 left unused for the given period, it's desirable to make it more compact.
 Metadata consumption follows a different pattern and reclaiming only the almost

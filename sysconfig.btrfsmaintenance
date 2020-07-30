@@ -56,18 +56,18 @@ BTRFS_BALANCE_PERIOD="weekly"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
-## Default:     "5 10 30"
+## Default:     "5 10"
 #
 # The usage percent for balancing data block groups.
 #
 # Note: default values should not disturb normal work but may not reclaim
 # enough block groups. If you observe that, add higher values but beware that
 # this will increase IO load on the system.
-BTRFS_BALANCE_DUSAGE="5 10 30"
+BTRFS_BALANCE_DUSAGE="5 10"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
-## Default:     "5 10"
+## Default:     "5"
 #
 # The usage percent for balancing metadata block groups. The values are also
 # used in case the filesystem has mixed blockgroups.
@@ -75,7 +75,7 @@ BTRFS_BALANCE_DUSAGE="5 10 30"
 # Note: default values should not disturb normal work but may not reclaim
 # enough block groups. If you observe that, add higher values but beware that
 # this will increase IO load on the system.
-BTRFS_BALANCE_MUSAGE="5 10"
+BTRFS_BALANCE_MUSAGE="5"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string

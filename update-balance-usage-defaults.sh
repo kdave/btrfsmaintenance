@@ -33,13 +33,13 @@ fixup()
 }
 
 fixup	'## Default:     "1 5 10 20 30 40 50"'			\
-	'## Default:     "5 10 30"'
-
-fixup	'BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"'		\
-	'BTRFS_BALANCE_DUSAGE="5 10 30"'
-
-fixup	'## Default:     "1 5 10 20 30"'			\
 	'## Default:     "5 10"'
 
+fixup	'BTRFS_BALANCE_DUSAGE="1 5 10 20 30 40 50"'		\
+	'BTRFS_BALANCE_DUSAGE="5 10"'
+
+fixup	'## Default:     "1 5 10 20 30"'			\
+	'## Default:     "5"'
+
 fixup	'BTRFS_BALANCE_MUSAGE="1 5 10 20 30"'			\
-	'BTRFS_BALANCE_MUSAGE="5 10"'
+	'BTRFS_BALANCE_MUSAGE="5"'
