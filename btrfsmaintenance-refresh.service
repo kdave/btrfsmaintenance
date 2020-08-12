@@ -1,5 +1,6 @@
 [Unit]
 Description=Update cron periods from /etc/sysconfig/btrfsmaintenance
+Documentation="file:/usr/share/doc/btrfsmaintenance/README.md.gz"
 
 [Service]
 ExecStart=/usr/share/btrfsmaintenance/btrfsmaintenance-refresh-cron.sh systemd-timer
