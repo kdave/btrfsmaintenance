@@ -188,6 +188,10 @@ timers have to be installed using a similar way as cron.  Please note that the
 '*.timer' and respective '*.service' files have to be installed so the timers
 work properly.
 
+Some package managers (eg. apt) will configure the timers automatically at install time - you can check with `ls /usr/lib/systemd/system/btrfs*`.
+
+To install the timers manually, run `btrfsmaintenance-refresh-cron.sh timer`.
+
 
 ## Quick start ##
 
