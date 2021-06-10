@@ -74,6 +74,7 @@ refresh_timer() {
 			mkdir -p /etc/systemd/system/"$SERVICE".timer.d/
 			cat << EOF > /etc/systemd/system/"$SERVICE".timer.d/schedule.conf
 [Timer]
+OnCalendar=
 OnCalendar=$PERIOD
 EOF
 			systemctl enable "$SERVICE".timer &> /dev/null
