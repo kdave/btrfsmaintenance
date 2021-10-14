@@ -97,6 +97,6 @@ run_task() {
 	if test "$BTRFS_ALLOW_CONCURRENCY" = "true"; then
 		"$@"
 	else
-		/usr/bin/flock --verbose /run/btrfs-maintenance-running."$UUID" "$@"
+		/usr/bin/flock /run/btrfs-maintenance-running."$UUID" "$@"
 	fi
 }
