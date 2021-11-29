@@ -99,7 +99,7 @@ install -m 644 -D sysconfig.btrfsmaintenance %{buildroot}%{_fillupdir}
 
 %files
 %license COPYING
-%doc README.md
+%doc README.md README.man
 %{_fillupdir}/sysconfig.btrfsmaintenance
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*
