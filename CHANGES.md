@@ -1,4 +1,4 @@
-version 0.5 (2020-07-30)
+# Version 0.5 (2020-07-30)
 
 - sysconfig:
   - change defaults of MUSAGE and DUSAGE for balance task to do less work,
@@ -12,19 +12,21 @@ version 0.5 (2020-07-30)
   - add alternative shell implementation of the plugin
 - installation docs update
 
-version 0.4.2 (2018-09-25)
+# Version 0.4.2 (2018-09-25)
+
 - CVE-2018-14722: expand auto mountpoints in a safe way
 - btrfs-defrag: fix missing function to detect btrfs filesystems (#52)
 - btrfs-trim: more verbose fstrim output (#60)
 - dist-install: print information about timer unit installation (#58)
 
-version 0.4.1 (2018-03-15)
+# Version 0.4.1 (2018-03-15)
+
 - defrag plugin: python2 and 3 compatibility
 - defrag plugin: target extent size lowered to 32MiB (#43)
 - shell compatibility fixes
 - systemd unit type fixes
 
-version 0.4 (2018-01-18)
+# Version 0.4 (2018-01-18)
 
 - add support for systemd timers and use them by default; the alternative cron
   scripts are still present (#29, #36)
@@ -34,13 +36,13 @@ version 0.4 (2018-01-18)
 - spec file cleanups
 - documentation updates
 
-version 0.3.1 (2017-04-07)
+# Version 0.3.1 (2017-04-07)
 
 - dist-install: fix installation paths, install functions
 - functions: fix syntax to be compatible with dash
 - spec: install functions file
 
-version 0.3 (2016-11-15)
+# Version 0.3 (2016-11-15)
 
 - add syslog to logging targets
 - add none target (/dev/null)
@@ -52,7 +54,7 @@ version 0.3 (2016-11-15)
 - add generic installation script
 - doc updates: retention policy tuning
 
-version 0.2 (2016-03-04)
+# Version 0.2 (2016-03-04)
 
 - updated documentation
 - support debian-like configuration paths
@@ -60,12 +62,12 @@ version 0.2 (2016-03-04)
 - fixed logger name typos for 'journal' target
 - defrag fixes (sysconfig, find arguments)
 
-version 0.1.2 (2015-10-08)
+# Version 0.1.2 (2015-10-08)
 
 - change default config for trim: off
 - journal loggin should work (fixed a typo)
 
-version 0.1.1 (2015-07-13)
+# Version 0.1.1 (2015-07-13)
 
 - fix typo and make journal logging target work
 - cron refresh: remove bashism
@@ -75,6 +77,6 @@ version 0.1.1 (2015-07-13)
 - add config option to specify log target (stdout, or journal)
 - fix sysconfig file Path: tags
 
-version 0.1 (2014-09-24)
+# Version 0.1 (2014-09-24)
 
 - initial
