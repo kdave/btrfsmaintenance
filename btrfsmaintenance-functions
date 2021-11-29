@@ -93,16 +93,16 @@ btrfs_fsid() {
 run_task() {
 	MNT="${@:$#}"
 	UUID=$(btrfs_fsid "$MNT")
-	local verbose="--verbose"
+	local verbose
 
 	if test "$BTRFS_ALLOW_CONCURRENCY" = "true"; then
 		"$@"
 	else
-		# Flock older than 2.27 does not support --verbose option
-		# flock --verbose fails with exit code 0 if unsupported,
-		# otherwise it will fail with exit code 64.
-		/usr/bin/flock --verbose > /dev/null 2>&1
-		[ $? == 0 ] && verbose=""
+		# Flock older than 2.27 does not support --verbose option, check
+		# if it's available as we'd like to log the information
+		if /usr/bin/flock --help 2>&1 | grep -q -- --verbose;
+			verbose="--verbose"
+		fi
 
 		/usr/bin/flock $verbose /run/btrfs-maintenance-running."$UUID" "$@"
 	fi
