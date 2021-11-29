@@ -31,18 +31,22 @@ case "$1" in
 esac
 
 refresh_cron() {
-	EXPECTED="$1"
-	SCRIPT="$2"
+	local EXPECTED="$1"
+	local SCRIPT="$2"
+	local VALID=false
+	local PERIOD
+	local LINK
+	local FILE
+
 	echo "Refresh script $SCRIPT for $EXPECTED"
 
-	valid=false
 	for PERIOD in daily weekly monthly none uninstall; do
 		if [ "$PERIOD" = "$EXPECTED" ]; then
-			valid=true
+			VALID=true
 		fi
 	done
 
-	if ! $valid; then
+	if ! $VALID; then
 		echo "$EXPECTED is not a valid period for cron.  Not changing."
 		return
 	fi
@@ -60,8 +64,9 @@ refresh_cron() {
 }
 
 refresh_timer() {
-	PERIOD="$1"
-	SERVICE="$2"
+	local PERIOD="$1"
+	local SERVICE="$2"
+
 	echo "Refresh timer $SERVICE for $PERIOD"
 
 	case "$PERIOD" in

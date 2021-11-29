@@ -12,9 +12,9 @@ expand_auto_mountpoint() {
 	local MNTLIST="$1"
 
 	if [ "$MNTLIST" = "auto" ]; then
-		local BTRFS_DEVICES=""
-		local DEVICE=""
-		local MNT=""
+		local BTRFS_DEVICES
+		local DEVICE
+		local MNT
 
 		# find all mounted btrfs filesystems, print their device nodes, sort them
 		# and remove identical entries
@@ -73,6 +73,7 @@ check_balance_running() {
 # check if filesystem is a btrfs
 is_btrfs() {
 	local FS=$(stat -f --format=%T "$1")
+
 	[ "$FS" = "btrfs" ] && return 0
 	return 1
 }
@@ -91,8 +92,8 @@ btrfs_fsid() {
 # run the given command with concurrency protection unless allowed by the
 # config, use for tasks that should not run at the same time due to heavy IO
 run_task() {
-	MNT="${@:$#}"
-	UUID=$(btrfs_fsid "$MNT")
+	local MNT="${@:$#}"
+	local UUID=$(btrfs_fsid "$MNT")
 	local verbose
 
 	if test "$BTRFS_ALLOW_CONCURRENCY" = "true"; then
