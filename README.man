@@ -1,0 +1,616 @@
+.nh
+.TH Btrfs maintenance toolbox
+.PP
+Table of contents:
+
+.RS
+.IP \(bu 2
+Quick start
+\[la]#quick-start\[ra]
+.IP \(bu 2
+Distro integration
+\[la]#distro-integration\[ra]
+.IP \(bu 2
+Tuning periodic snapshotting
+\[la]#tuning-periodic-snapshotting\[ra]
+
+.RE
+
+.PP
+This is a set of scripts supplementing the btrfs filesystem and aims to automate
+a few maintenance tasks. This means the \fIscrub\fP, \fIbalance\fP, \fItrim\fP or
+\fIdefragmentation\fP\&.
+
+.PP
+Each of the tasks can be turned on/off and configured independently. The
+default config values were selected to fit the default installation profile
+with btrfs on the root filesystem.
+
+.PP
+Overall tuning of the default values should give a good balance between effects
+of the tasks and low impact of other work on the system. If this does not fit
+your needs, please adjust the settings.
+
+.SH Tasks
+.PP
+The following sections will describe the tasks in detail. There's one config
+option that affects the task concurrency, \fB\fCBTRFS\_ALLOW\_CONCURRENCY\fR\&. This is
+to avoid extra high resource consumption or unexpected interaction among the
+tasks and will serialize them in the order they're started by timers.
+
+.SS scrub
+.PP
+\fBDescription:\fP Scrub operation reads all data and metadata from the devices
+and verifies the checksums. It's not mandatory, but may point out problems with
+faulty hardware early as it touches data that might not be in use and bit rot.
+
+.PP
+If there's a redundancy of data/metadata, ie. the \fIDUP\fP or \fIRAID1/5/6\fP profiles, scrub
+is able to repair the data automatically if there's a good copy available.
+
+.PP
+\fBImpact when active:\fP Intense read operations take place and may slow down or
+block other filesystem activies, possibly only for short periods.
+
+.PP
+\fBTuning:\fP
+
+.RS
+.IP \(bu 2
+the recommended period is once in a month but a weekly period is also acceptable
+.IP \(bu 2
+you can turn off the automatic repair (\fB\fCBTRFS\_SCRUB\_READ\_ONLY\fR)
+.IP \(bu 2
+the default IO priority is set to \fIidle\fP but scrub may take long to finish,
+you can change priority to \fInormal\fP (\fB\fCBTRFS\_SCRUB\_PRIORITY\fR)
+
+.RE
+
+.PP
+\fBRelated commands:\fP
+
+.RS
+.IP \(bu 2
+you can check status of last scrub run (either manual or through the cron
+job) by \fB\fCbtrfs scrub status /path\fR
+.IP \(bu 2
+you can cancel a running scrub anytime if you find it inconvenient (\fB\fCbtrfs
+scrub cancel /path\fR), the progress state is saved each 5 seconds and next
+time scrub will start from that point
+
+.RE
+
+.SS balance
+.PP
+\fBDescription:\fP The balance command can do a lot of things, in general moves
+data around in big chunks. Here we use it to reclaim back the space of the
+underused chunks so it can be allocated again according to current needs.
+
+.PP
+The point is to prevent some corner cases where it's not possible to eg.
+allocate new metadata chunks because the whole device space is reserved for all
+the chunks, although the total space occupied is smaller and the allocation
+should succeed.
+
+.PP
+The balance operation needs enough workspace so it can shuffle data around. By
+workspace we mean device space that has no filesystem chunks on it, not to be
+confused by free space as reported eg. by \fB\fCdf\fR\&.
+
+.PP
+\fBImpact when active:\fP Possibly big. There's a mix of read and write operations, is
+seek\-heavy on rotational devices. This can interfere with other work in case
+the same set of blocks is affected.
+
+.PP
+The balance command uses filters to do the work in smaller batches.
+
+.PP
+Before kernel version 5.2, the impact with quota groups enabled can be extreme.
+The balance operation performs quota group accounting for every extent being
+relocated, which can have the impact of stalling the file system for an
+extended period of time.
+
+.PP
+\fBExpected result:\fP If possible all the underused chunks are removed, the
+value of \fB\fCtotal\fR in output of \fB\fCbtrfs fi df /path\fR should be lower than before.
+Check the logs.
+
+.PP
+The balance command may fail with \fIno space\fP reason but this is considered a
+minor fault as the internal filesystem layout may prevent the command to find
+enough workspace. This might be a time for manual inspection of space.
+
+.PP
+\fBTuning:\fP
+
+.RS
+.IP \(bu 2
+you can make the space reclaim more aggressive by adding higher percentage to
+\fB\fCBTRFS\_BALANCE\_DUSAGE\fR or \fB\fCBTRFS\_BALANCE\_MUSAGE\fR\&. Higher value means bigger
+impact on your system and becomes very noticeable.
+.IP \(bu 2
+the metadata chunks usage pattern is different from data and it's not
+necessary to reclaim metadata block groups that are more than 30 full. The
+default maximum is 10 which should not degrade performance too much but may
+be suboptimal if the metadata usage varies wildly over time. The assumption
+is that underused metadata chunks will get used at some point so it's not
+absolutely required to do the reclaim.
+.IP \(bu 2
+the useful period highly depends on the overall data change pattern on the
+filesystem
+
+.RE
+
+.PP
+\fBChanged defaults since 0.5:\fP
+
+.PP
+Versions up to 0.4.2 had usage filter set up to 50% for data and up to 30% for
+metadata.  Based on user feedback, the numbers have been reduced to 10% (data)
+and 5% (metadata). The system load during the balance service will be smaller
+and the result of space compaction still reasonable. Multiple data chunks filled
+to less than 10% can be merged into fewer chunks. The file data can change in
+large volumes, eg. deleting a big file can free a lot of space. If the space is
+left unused for the given period, it's desirable to make it more compact.
+Metadata consumption follows a different pattern and reclaiming only the almost
+unused chunks makes more sense, otherwise there's enough reserved metadata
+space for operations like reflink or snapshotting.
+
+.PP
+A convenience script is provided to update the unchanged defaults,
+\fB\fC/usr/share/btrfsmaintenance/update\-balance\-usage\-defaults.sh\fR .
+
+.SS trim
+.PP
+\fBDescription:\fP The TRIM operation (aka. \fIdiscard\fP) can instruct the underlying device to
+optimize blocks that are not used by the filesystem. This task is performed
+on\-demand by the \fIfstrim\fP utility.
+
+.PP
+This makes sense for SSD devices or other type of storage that can translate
+the TRIM action to something useful (eg. thin\-provisioned storage).
+
+.PP
+\fBImpact when active:\fP Should be low, but depends on the amount of blocks
+being trimmed.
+
+.PP
+\fBTuning:\fP
+
+.RS
+.IP \(bu 2
+the recommended period is weekly, but monthly is also fine
+.IP \(bu 2
+the trim commands might not have an effect and are up to the device, eg. a
+block range too small or other constraints that may differ by device
+type/vendor/firmware
+.IP \(bu 2
+the default configuration is \fIoff\fP because of the the system fstrim.timer
+
+.RE
+
+.SS defrag
+.PP
+\fBDescription:\fP Run defragmentation on configured directories. This is for
+convenience and not necessary as defragmentation needs are usually different
+for various types of data.
+
+.PP
+Please note that the defragmentation process does not descend to other mount
+points and nested subvolumes or snapshots. All nested paths would need to be
+enumerated in the respective config variable. The command utilizes \fB\fCfind
+\-xdev\fR, you can use that to verify in advance which paths will the
+defragmentation affect.
+
+.PP
+\fBSpecial case:\fP
+
+.PP
+There's a separate defragmentation task that happens automatically and
+defragments only the RPM database files. This is done via a \fIzypper\fP plugin
+and the defrag pass triggers at the end of the installation.
+
+.PP
+This improves reading the RPM databases later, but the installation process
+fragments the files very quickly so it's not likely to bring a significant
+speedup here.
+
+.SH Periodic scheduling
+.PP
+There are now two ways how to schedule and run the periodic tasks: cron and
+systemd timers. Only one can be active on a system and this should be decided
+at the installation time.
+
+.SS Cron
+.PP
+Cron takes care of periodic execution of the scripts, but they can be run any
+time directly from \fB\fC/usr/share/btrfsmaintenance/\fR, respecting the configured
+values in \fB\fC/etc/sysconfig/btrfsmaintenance\fR\&.
+
+.PP
+The changes to configuration file need to be reflected in the \fB\fC/etc/cron\fR
+directories where the scripts are linked for the given period.
+
+.PP
+If the period is changed, the cron symlinks have to be refreshed:
+
+.RS
+.IP \(bu 2
+manually \-\- use \fB\fCsystemctl restart btrfsmaintenance\-refresh\fR (or the \fB\fCrcbtrfsmaintenance\-refresh\fR shortcut)
+.IP \(bu 2
+in \fIyast2\fP \-\- sysconfig editor triggers the refresh automatically
+.IP \(bu 2
+using a file watcher \-\- if you install \fB\fCbtrfsmaintenance\-refresh.path\fR, this will utilize the file monitor to detect changes and will run the refresh
+
+.RE
+
+.SS Systemd timers
+.PP
+There's a set of timer units that run the respective task script. The periods
+are configured in the \fB\fC/etc/sysconfig/btrfsmaintenance\fR file as well. The
+timers have to be installed using a similar way as cron.  Please note that the
+'\fI\&.timer' and respective '\fP\&.service' files have to be installed so the timers
+work properly.
+
+.PP
+Some package managers (eg. \fB\fCapt\fR) will configure the timers automatically at
+install time \- you can check with \fB\fCls /usr/lib/systemd/system/btrfs*\fR\&.
+
+.PP
+To install the timers manually, run \fB\fCbtrfsmaintenance\-refresh\-cron.sh timer\fR\&.
+
+.SH Quick start
+.PP
+The tasks' periods and other parameters should fit most use cases and do not
+need to be touched. Review the mount points (variables ending with
+\fB\fC\_MOUNTPOINTS\fR) whether you want to run the tasks there or not.
+
+.SH Distro integration
+.PP
+Currently the support for widely used distros is present.  More distros can be
+added. This section describes how the pieces are put together and should give
+some overview.
+
+.SS Installation
+.PP
+For debian based systems, run \fB\fCdist\-install.sh\fR as root.
+
+.PP
+For non\-debian based systems, check for distro provided package or
+do manual installation of files as described below.
+
+.RS
+.IP \(bu 2
+\fB\fCbtrfs\-*.sh\fR task scripts are expected at \fB\fC/usr/share/btrfsmaintenance\fR
+.IP \(bu 2
+\fB\fCsysconfig.btrfsmaintenance\fR configuration template is put to:
+.RS
+.IP \(bu 2
+\fB\fC/etc/sysconfig/btrfsmaintenance\fR on SUSE and RedHat based systems or derivatives
+.IP \(bu 2
+\fB\fC/etc/default/btrfsmaintenance\fR on Debian and derivatives
+
+.RE
+
+.IP \(bu 2
+\fB\fC/usr/lib/zypp/plugins/commit/btrfs\-defrag\-plugin.sh\fR or
+\fB\fC/usr/lib/zypp/plugins/commit/btrfs\-defrag\-plugin.py\fR post\-update script for
+zypper (the package manager), applies to SUSE\-based distros for now
+.IP \(bu 2
+cron refresh scripts are installed (see bellow)
+
+.RE
+
+.PP
+The defrag plugin has a shell and python implementation, choose what suits the
+installation better.
+
+.SS cron jobs
+.PP
+The periodic execution of the tasks is done by the 'cron' service.  Symlinks to
+the task scripts are located in the respective directories in
+\fB\fC/etc/cron.<PERIOD>\fR\&.
+
+.PP
+The script \fB\fCbtrfsmaintenance\-refresh\-cron.sh\fR will synchronize the symlinks
+according to the configuration files. This can be called automatically by a GUI
+configuration tool if it's capable of running post\-change scripts or services.
+In that case there's \fB\fCbtrfsmaintenance\-refresh.service\fR systemd service.
+
+.PP
+This service can also be automatically started upon any modification of the
+configuration file in \fB\fC/etc/sysconfig/btrfsmaintenance\fR by installing the
+\fB\fCbtrfsmaintenance\-refresh.path\fR systemd watcher.
+
+.SS Post\-update defragmentation
+.PP
+The package database files tend to be updated in a random way and get
+fragmented, which particularly hurts on btrfs. For rpm\-based distros this means files
+in \fB\fC/var/lib/rpm\fR\&. The script or plugin simply runs a defragmentation on the affected files.
+See \fB\fCbtrfs\-defrag\-plugin.sh\fR or \fB\fCbtrfs\-defrag\-plugin.py\fR for more details.
+
+.PP
+At the moment the 'zypper' package manager plugin exists. As the package
+managers differ significantly, there's no single plugin/script to do that.
+
+.SS Settings
+.PP
+The settings are copied to the expected system location from the template
+(\fB\fCsysconfig.btrfsmaintenance\fR). This is a shell script and can be sourced to obtain
+values of the variables.
+
+.PP
+The template contains descriptions of the variables, default and possible
+values and can be deployed without changes (expecting the root filesystem to be
+btrfs).
+
+.SH Tuning periodic snapshotting
+.PP
+There are various tools and handwritten scripts to manage periodic snapshots
+and cleaning. The common problem is tuning the retention policy constrained by
+the filesystem size and not running out of space.
+
+.PP
+This section will describe factors that affect that, using snapper
+\[la]https://snapper.io\[ra]
+as an example, but adapting to other tools should be straightforward.
+
+.SS Intro
+.PP
+Snapper is a tool to manage snapshots of btrfs subvolumes. It can create
+snapshots of given subvolume manually, periodically or in a pre/post way for
+a given command. It can be configured to retain existing snapshots according
+to time\-based settings. As the retention policy can be very different for
+various use cases, we need to be able to find matching settings.
+
+.PP
+The settings should satisfy user's expectation about storing previous copies of
+the subvolume but not taking too much space. In an extreme, consuming the whole
+filesystem space and preventing some operations to finish.
+
+.PP
+In order to avoid such situations, the snapper settings should be tuned according
+to the expected use case and filesystem size.
+
+.SS Sample problem
+.PP
+Default settings of snapper on default root partition size can easily lead to
+no\-space conditions (all TIMELINE values set to 10). Frequent system updates
+make it happen earlier, but this also affects long\-term use.
+
+.SS Factors affecting space consumption
+.RS
+.IP "  1." 5
+frequency of snapshotting
+.IP "  2." 5
+amount of data changes between snapshots (delta)
+.IP "  3." 5
+snapshot retention settings
+.IP "  4." 5
+size of the filesystem
+
+.RE
+
+.PP
+Each will be explained below.
+
+.PP
+The way how the files are changed affects the space consumption. When a new
+data overwrite existing, the new data will be pinned by the following snapshot,
+while the original data will belong to previous snapshot.  This means that the
+allocated file blocks are freed after the last snapshot pointing to them is
+gone.
+
+.SS Tuning
+.PP
+The administrator/user is supposed to know the approximate use of the partition
+with snapshots enabled.
+
+.PP
+The decision criteria for tuning is space consumption and we're optimizing to
+maximize retention without running out of space.
+
+.PP
+All the factors are intertwined and we cannot give definite answers but rather
+describe the tendencies.
+
+.SS Snapshotting frequency
+.RS
+.IP \(bu 2
+\fBautomatic\fP: if turned on with the \fB\fCTIMELINE\fR config option, the periodic
+snapshots are taken hourly. The daily/weekly/monthly/yearly periods will keep
+the first hourly snapshot in the given period.
+.IP \(bu 2
+\fBat package update\fP: package manager with snapper support will create
+pre/post snapshots before/after an update happens.
+.IP \(bu 2
+\fBmanual\fP: the user can create a snapshot manually with \fB\fCsnapper create\fR,
+with a given snapshot type (ie. single, pre, post).
+
+.RE
+
+.SS Amount of data change
+.PP
+This is a parameter hard to predict and calculate. We work with rough
+estimates, eg. megabytes, gigabytes etc.
+
+.SS Retention settings
+.PP
+The user is supposed to know possible needs of recovery or examination of
+previous file copies stored in snapshots.
+
+.PP
+It's not recommended to keep too old snapshots, eg. monthly or even yearly if
+there's no apparent need for that. The yearly snapshots should not substitute
+backups, as they reside on the same partition and cannot be used for recovery.
+
+.SS Filesystem size
+.PP
+Bigger filesystem allows for longer retention, higher frequency updates and
+amount of data changes.
+
+.PP
+As an example of a system root partition, the recommended size is 30 GiB, but
+50 GiB is selected by the installer if the snapshots are turned on.
+
+.PP
+For non\-system partition it is recommended to watch remaining free space.
+Although getting an accurate value on btrfs is tricky, due to shared extents
+and snapshots, the output of \fB\fCdf\fR gives a rough idea. Low space, like under a
+few gigabytes is more likely to lead to no\-space conditions, so it's a good
+time to delete old snapshots or review the snapper settings.
+
+.SS Typical use cases
+.SS A rolling distro
+.RS
+.IP \(bu 2
+frequency of updates: high, multiple times per week
+.IP \(bu 2
+amount of data changed between updates: high
+
+.RE
+
+.PP
+Suggested values:
+
+.PP
+.RS
+
+.nf
+TIMELINE\_LIMIT\_HOURLY="12"
+TIMELINE\_LIMIT\_DAILY="5"
+TIMELINE\_LIMIT\_WEEKLY="2"
+TIMELINE\_LIMIT\_MONTHLY="1"
+TIMELINE\_LIMIT\_YEARLY="0"
+
+.fi
+.RE
+
+.PP
+The size of root partition should be at least 30GiB, but more is better.
+
+.SS Regular/enterprise distro
+.RS
+.IP \(bu 2
+frequency of updates: low, a few times per month
+.IP \(bu 2
+amount of data changed between updates: low to moderate
+
+.RE
+
+.PP
+Most data changes come probably from the package updates, in the range of
+hundreds of megabytes per update.
+
+.PP
+Suggested values:
+
+.PP
+.RS
+
+.nf
+TIMELINE\_LIMIT\_HOURLY="12"
+TIMELINE\_LIMIT\_DAILY="7"
+TIMELINE\_LIMIT\_WEEKLY="4"
+TIMELINE\_LIMIT\_MONTHLY="6"
+TIMELINE\_LIMIT\_YEARLY="1"
+
+.fi
+.RE
+
+.SS Big file storage
+.RS
+.IP \(bu 2
+frequency of updates: moderate to high
+.IP \(bu 2
+amount of data changed between updates: no changes in files, new files added, old deleted
+
+.RE
+
+.PP
+Suggested values:
+
+.PP
+.RS
+
+.nf
+TIMELINE\_LIMIT\_HOURLY="12"
+TIMELINE\_LIMIT\_DAILY="7"
+TIMELINE\_LIMIT\_WEEKLY="4"
+TIMELINE\_LIMIT\_MONTHLY="6"
+TIMELINE\_LIMIT\_YEARLY="0"
+
+.fi
+.RE
+
+.PP
+Note, that deleting a big file that has been snapshotted will not free the space
+until all relevant snapshots are deleted.
+
+.SS Mixed
+.RS
+.IP \(bu 2
+frequency of updates: unpredictable
+.IP \(bu 2
+amount of data changed between updates: unpredictable
+
+.RE
+
+.PP
+Examples:
+
+.RS
+.IP \(bu 2
+home directory with small files (in range of kilobytes to megabytes), large files (hundreds of megabytes to gigabytes).
+.IP \(bu 2
+git trees, bare and checked out repositories
+
+.RE
+
+.PP
+Not possible to suggest config numbers as it really depends on user
+expectations. Keeping a few hourly snapshots should not consume too much space
+and provides a copy of files, eg. to restore after accidental deletion.
+
+.PP
+Starting point:
+
+.PP
+.RS
+
+.nf
+TIMELINE\_LIMIT\_HOURLY="12"
+TIMELINE\_LIMIT\_DAILY="7"
+TIMELINE\_LIMIT\_WEEKLY="1"
+TIMELINE\_LIMIT\_MONTHLY="0"
+TIMELINE\_LIMIT\_YEARLY="0"
+
+.fi
+.RE
+
+.SS Summary
+.TS
+allbox;
+l l l l l l 
+l l l l l l .
+\fB\fCType\fR	\fB\fCHourly\fR	\fB\fCDaily\fR	\fB\fCWeekly\fR	\fB\fCMonthly\fR	\fB\fCYearly\fR
+Rolling	12	5	2	1	0
+Regular	12	7	4	6	1
+Big files	12	7	4	6	0
+Mixed	12	7	1	0	0
+.TE
+
+.SH About
+.PP
+The goal of this project is to help administering btrfs filesystems. It is not
+supposed to be distribution specific. Common scripts/configs are preferred but
+per\-distro exceptions will be added when necessary.
+
+.PP
+License: GPL 2
+\[la]https://www.gnu.org/licenses/gpl-2.0.html\[ra]
+
+.PP
+Contributing guide
+\[la]CONTRIBUTING.md\[ra]\&.
