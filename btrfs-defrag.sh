@@ -28,7 +28,7 @@ for P in $BTRFS_DEFRAG_PATHS; do
 		continue
 	fi
 	find "$P" -xdev -size "$BTRFS_DEFRAG_MIN_SIZE" -type f \
-		-exec btrfs filesystem defrag -t 32m -f $BTRFS_VERBOSITY '{}' \;
+		-exec btrfs filesystem defrag -r -t 32m -f $BTRFS_VERBOSITY '{}' \;
 done
 
 } | \
