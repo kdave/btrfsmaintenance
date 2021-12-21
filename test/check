@@ -1,0 +1,65 @@
+#!/bin/sh -e
+
+# Mandatory paramaters
+SCRATCH_DEV=
+SCRATCH_MNT=
+
+# Optional
+configfile=
+
+usage()
+{
+	echo "$0" 
+	exit 1
+}
+
+if [ -f /etc/sysconfig/btrfsmaintenance ] ; then
+	configfile=/etc/sysconfig/btrfsmaintenance
+fi
+
+if [ -f /etc/default/btrfsmaintenance ] ; then
+	configfile=/etc/default/btrfsmaintenance
+fi
+
+checkconfig()
+{
+	error=0
+
+	if ! [ -f "$configfile" ]; then
+		echo "ERROR: config file '$file' for btrfsmaintenance is not found."
+		error=1
+	fi
+
+	if [ -z $SCRATCH_DEV ]; then
+		echo "ERROR: SCRATCH_DEV is not set."
+		error=1
+	fi
+
+	if [ -z $SCRATCH_MNT ]; then
+		echo "ERROR: SCRATCH_MNT is not set."
+		error=1
+	fi
+
+	[ $error ] && exit $error
+}
+
+setconfig()
+{
+	sed -i -e "s,$1,$2," "$configfile"
+}
+
+initconfig()
+{
+	mv $configfile ${configfile}.org
+	cp ./sysconfig.btrfsmaintenance.test $configfile
+	setconfig "btrfsmnt" "$SCRATCH_MNT"
+}
+
+cleanup()
+{
+	mv ${configfile}.org $configfile
+}
+
+checkconfig
+initconfig
+cleanup
