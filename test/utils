@@ -1,0 +1,74 @@
+#!/bin/bash
+
+tell()
+{
+	[ $verbose = true ] && echo $*
+	:
+}
+
+timer_setup()
+{
+	local timertype=$1
+
+	$verbose == true && \
+	$TESTPATH/btrfsmaintenance-refresh-cron.sh $timertype || \
+	$TESTPATH/btrfsmaintenance-refresh-cron.sh $timertype > /dev/null
+}
+
+timer_reset()
+{
+	local timertype=$1
+
+	$verbose = true && \
+	$TESTPATH/btrfsmaintenance-refresh-cron.sh $timertype uninstall || \
+	$TESTPATH/btrfsmaintenance-refresh-cron.sh $timertype uninstall > /dev/null
+}
+
+sysconf_file()
+{
+	if [ -f /etc/sysconfig/btrfsmaintenance ]; then
+		echo "/etc/sysconfig/btrfsmaintenance"
+		return
+	elif [ -f /etc/default/btrfsmaintenance ]; then
+		echo "/etc/default/btrfsmaintenance"
+		return
+	fi
+
+	echo "ERROR: btrfsmaintenance config file is not found"
+	exit 1
+}
+
+load_config()
+{
+	local sys_config=$(sysconf_file)
+	local test_configfile=$1
+
+	if ! [ -f "$test_configfile" ]; then
+	echo "ERROR: config file '$test_configfile' is not found."
+		exit 1
+	fi
+
+	# btrfsmaintenance-refresh-cron.sh and the tasks scripts have configfile
+	# path hard coded. So move our test config file there.
+
+	mv $sys_config ${sys_config}.org
+	cp $test_configfile $sys_config
+}
+
+unload_config()
+{
+	local sys_config=$(sysconf_file)
+
+	mv ${sys_config}.org $sys_config
+}
+
+update_btrfs_mnt()
+{
+	local configfile=$1
+
+	for script in BTRFS_SCRUB_MOUNTPOINTS BTRFS_DEFRAG_PATHS \
+		BTRFS_BALANCE_MOUNTPOINTS BTRFS_TRIM_MOUNTPOINTS
+	do
+		sed -i -E "s,($script=).*,\1$SCRATCH_MNT," $configfile
+	done
+}

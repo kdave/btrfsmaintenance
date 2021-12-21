@@ -1,0 +1,54 @@
+#!/bin/bash
+
+#### Modify as needed #####
+
+# Where is the code under test
+TESTPATH="/usr/share/btrfsmaintenance"
+#TESTPATH="../"
+
+# A btrfs filesystem on which the btrfsmaintenance script shall run.
+SCRATCH_MNT="/mnt/scratch"
+
+verbose=false
+
+###########################
+
+. $(dirname $(realpath "$0"))/utils
+
+do_test()
+{
+	local testcase=$1
+	local testname
+	local should_match_expected=false
+
+	testname=$(echo $testcase | cut -d"." -f1)
+	rm ./results/$testname.out > /dev/null 2>&1
+	rm ./results/$testname.full > /dev/null 2>&1
+
+	. ./$testcase > ./results/$testname.out
+
+	# No expected output file means testcase breaks the silence upon error
+	if [ -f $testname.expected ]; then
+		diff -Z ./results/${testname}.out ./${testname}.expected
+		[ $? != 0 ] && \
+		echo "$testname ..... [Failed]" || \
+		echo "$testname ..... [Passed]"
+	elif [ $(cat ./results/$testname.out | wc -l) != 0 ]; then
+		echo "$testname ..... [Failed: check ./results/$testname.out|full]"
+	else
+		echo "$testname ..... [Passed]"
+	fi
+}
+
+update_btrfs_mnt sysconfig.btrfsmaintenance.testall
+
+if [ ! -z $1 ]; then
+	tests=$*
+else
+	tests=$(ls *.sh | grep -E '^[0-9]')
+fi
+
+for testcase in $tests
+do
+	do_test $testcase
+done
