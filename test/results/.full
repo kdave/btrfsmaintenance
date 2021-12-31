@@ -1,0 +1,4 @@
+Running fstrim on /mnt/scratch
+fstrim: /mnt/scratch: the discard operation is not supported
+flock: getting lock took 0.000005 seconds
+flock: executing fstrim
