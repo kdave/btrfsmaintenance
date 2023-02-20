@@ -1,0 +1,10 @@
+[Unit]
+Description=Check for btrfs issues and send mail if any were found
+Documentation=man:btrfs
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+
+[Install]
+WantedBy=timers.target
