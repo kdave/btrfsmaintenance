@@ -65,7 +65,7 @@ This is an automatically generated mail message from btrfs-issuemail
 running on $HOSTNAME
 
 An issue has been detected on the btrfs device mounted as $MM.
-
+You will be getting this email daily until you clear the issue with 'btrfs device stats --reset $MM'
 Faithfully yours, etc.
 
 P.S. The 'btrfs device stats' output is:
