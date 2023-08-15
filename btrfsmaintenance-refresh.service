@@ -1,5 +1,5 @@
 [Unit]
-Description=Update cron periods from /etc/sysconfig/btrfsmaintenance
+Description=Configure systemd timer schedule according to /etc/sysconfig/btrfsmaintenance
 Documentation="file:/usr/share/doc/btrfsmaintenance/README.man"
 Documentation="file:/usr/share/doc/packages/btrfsmaintenance/README.man"
 
