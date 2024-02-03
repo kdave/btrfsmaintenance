@@ -40,7 +40,21 @@ for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 		echo "Path $MNT is not btrfs, skipping"
 		continue
 	fi
-	run_task btrfs scrub start -Bd $ioprio $readonly "$MNT"
+
+	if ! is_raid56 "$MNT"; then
+		echo "RAID level is not 5 or 6, parallel device scrubbing"
+		run_task btrfs scrub start -Bd $ioprio $readonly "$MNT"
+	else
+		echo "RAID level is 5 or 6, sequential device scrubbing"
+		for DEV in $(btrfs filesystem show   "$MNT" |  awk '/ path /{print $NF}')
+		do
+			run_task btrfs scrub start -Bd $ioprio $readonly "$DEV"
+			until btrfs scrub status "$DEV" | grep finished
+				do
+					sleep 5
+				done
+		done
+	fi
 	if [ "$?" != "0" ]; then
 		echo "Scrub cancelled at $MNT"
 		exit 1
