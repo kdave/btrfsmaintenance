@@ -78,6 +78,16 @@ is_btrfs() {
 	return 1
 }
 
+# function: is_raid56
+# parameter: path to a mounted filesystem
+#
+# check if filesystem is on a RAID-5 or RAID-6
+is_raid56() {
+	btrfs filesystem usage "$1" | grep Data,RAID5 && return 0
+	btrfs filesystem usage "$1" | grep Data,RAID6 && return 0
+	return 1
+}
+
 # function: btrfs_fsid
 # parameter: path to a mounted filesystem
 #
