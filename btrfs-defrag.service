@@ -4,7 +4,7 @@ Documentation=man:btrfs-filesystem
 After=fstrim.service btrfs-trim.service btrfs-scrub.service
 
 [Service]
-Type=simple
+Type=exec
 ExecStart=/usr/share/btrfsmaintenance/btrfs-defrag.sh
 IOSchedulingClass=idle
 CPUSchedulingPolicy=idle
