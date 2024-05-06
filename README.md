@@ -34,11 +34,11 @@ __Description:__ Scrub operation reads all data and metadata from the devices
 and verifies the checksums. It's not mandatory, but may point out problems with
 faulty hardware early as it touches data that might not be in use and bit rot.
 
-If there's a redundancy of data/metadata, ie. the *DUP* or *RAID1/5/6* profiles, scrub
+If there's a redundancy of data/metadata, i.e. the *DUP* or *RAID1/5/6* profiles, scrub
 is able to repair the data automatically if there's a good copy available.
 
 __Impact when active:__ Intense read operations take place and may slow down or
-block other filesystem activies, possibly only for short periods.
+block other filesystem activities, possibly only for short periods.
 
 __Tuning:__
 
@@ -61,14 +61,14 @@ __Description:__ The balance command can do a lot of things, in general moves
 data around in big chunks. Here we use it to reclaim back the space of the
 underused chunks so it can be allocated again according to current needs.
 
-The point is to prevent some corner cases where it's not possible to eg.
+The point is to prevent some corner cases where it's not possible to e.g.
 allocate new metadata chunks because the whole device space is reserved for all
 the chunks, although the total space occupied is smaller and the allocation
 should succeed.
 
 The balance operation needs enough workspace so it can shuffle data around. By
 workspace we mean device space that has no filesystem chunks on it, not to be
-confused by free space as reported eg. by `df`.
+confused by free space as reported e.g. by `df`.
 
 __Impact when active:__ Possibly big. There's a mix of read and write operations, is
 seek-heavy on rotational devices. This can interfere with other work in case
@@ -110,7 +110,7 @@ metadata.  Based on user feedback, the numbers have been reduced to 10% (data)
 and 5% (metadata). The system load during the balance service will be smaller
 and the result of space compaction still reasonable. Multiple data chunks filled
 to less than 10% can be merged into fewer chunks. The file data can change in
-large volumes, eg. deleting a big file can free a lot of space. If the space is
+large volumes, e.g. deleting a big file can free a lot of space. If the space is
 left unused for the given period, it's desirable to make it more compact.
 Metadata consumption follows a different pattern and reclaiming only the almost
 unused chunks makes more sense, otherwise there's enough reserved metadata
@@ -126,7 +126,7 @@ optimize blocks that are not used by the filesystem. This task is performed
 on-demand by the *fstrim* utility.
 
 This makes sense for SSD devices or other type of storage that can translate
-the TRIM action to something useful (eg. thin-provisioned storage).
+the TRIM action to something useful (e.g. thin-provisioned storage).
 
 __Impact when active:__ Should be low, but depends on the amount of blocks
 being trimmed.
@@ -134,10 +134,10 @@ being trimmed.
 __Tuning:__
 
 * the recommended period is weekly, but monthly is also fine
-* the trim commands might not have an effect and are up to the device, eg. a
+* the trim commands might not have an effect and are up to the device, e.g. a
   block range too small or other constraints that may differ by device
   type/vendor/firmware
-* the default configuration is *off* because of the the system fstrim.timer
+* the default configuration is *off* because of the system fstrim.timer
 
 ### defrag ###
 
@@ -191,7 +191,7 @@ timers have to be installed using a similar way as cron.  Please note that the
 '*.timer' and respective '*.service' files have to be installed so the timers
 work properly.
 
-Some package managers (eg. `apt`) will configure the timers automatically at
+Some package managers (e.g. `apt`) will configure the timers automatically at
 install time - you can check with `ls /usr/lib/systemd/system/btrfs*`.
 
 To install the timers manually, run `btrfsmaintenance-refresh-cron.sh timer`.
@@ -329,19 +329,19 @@ describe the tendencies.
   pre/post snapshots before/after an update happens.
 
 * **manual**: the user can create a snapshot manually with `snapper create`,
-  with a given snapshot type (ie. single, pre, post).
+  with a given snapshot type (i.e. single, pre, post).
 
 #### Amount of data change
 
 This is a parameter hard to predict and calculate. We work with rough
-estimates, eg. megabytes, gigabytes etc.
+estimates, e.g. megabytes, gigabytes etc.
 
 #### Retention settings
 
 The user is supposed to know possible needs of recovery or examination of
 previous file copies stored in snapshots.
 
-It's not recommended to keep too old snapshots, eg. monthly or even yearly if
+It's not recommended to keep too old snapshots, e.g. monthly or even yearly if
 there's no apparent need for that. The yearly snapshots should not substitute
 backups, as they reside on the same partition and cannot be used for recovery.
 
@@ -421,7 +421,7 @@ Examples:
 
 Not possible to suggest config numbers as it really depends on user
 expectations. Keeping a few hourly snapshots should not consume too much space
-and provides a copy of files, eg. to restore after accidental deletion.
+and provides a copy of files, e.g. to restore after accidental deletion.
 
 Starting point:
 
