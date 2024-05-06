@@ -1,3 +1,9 @@
+# Version 0.5.2 (2024-07-04)
+
+- fix syntax error in run_task, preventing jobs to start
+- start scrub jobs sequentially if RAID5 or RAID6 data profile is found
+- fix btrfsmaintenance-refresh.service description
+
 # Version 0.5.1 (2024-05-06)
 
 - fix handling of OnCalendar timer directive in the drop-in configuration file
