@@ -1,3 +1,10 @@
+# Version 0.5.1 (2024-05-06)
+
+- fix handling of OnCalendar timer directive in the drop-in configuration file
+  that reads the periods from the sysconfig
+- fix use of --verbose option of fstrim, not available on util-linux < 2.27
+- ship manual page of README,  also available as 'systemctl help servicename'
+
 # Version 0.5 (2020-07-30)
 
 - sysconfig:
