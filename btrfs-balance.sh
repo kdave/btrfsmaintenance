@@ -44,12 +44,11 @@ for MM in $BTRFS_BALANCE_MOUNTPOINTS; do
 			run_task btrfs balance start -v -musage=$BB -dusage=$BB "$MM"
 		done
 	else
-		run_task btrfs balance start -dusage=0 "$MM"
 		for BB in $BTRFS_BALANCE_DUSAGE; do
 			# quick round to clean up the unused block groups
 			run_task btrfs balance start -v -dusage=$BB "$MM"
 		done
-		run_task btrfs balance start -musage=0 "$MM"
+		
 		for BB in $BTRFS_BALANCE_MUSAGE; do
 			# quick round to clean up the unused block groups
 			run_task btrfs balance start -v -musage="$BB" "$MM"
