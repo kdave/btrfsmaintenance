@@ -44,7 +44,7 @@ BTRFS_BALANCE_MOUNTPOINTS="/"
 
 ## Path:           System/File systems/btrfs
 ## Type:           string(none,daily,weekly,monthly)
-## Default:        "weekly"
+## Default:        *
 ## ServiceRestart: btrfsmaintenance-refresh
 #
 # Frequency of periodic balance.
@@ -52,7 +52,7 @@ BTRFS_BALANCE_MOUNTPOINTS="/"
 # The frequency may be specified using one of the listed values or
 # in the format documented in the "Calendar Events" section of systemd.time(7),
 # if available.
-BTRFS_BALANCE_PERIOD="weekly"
+BTRFS_BALANCE_PERIOD="none"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
@@ -89,7 +89,7 @@ BTRFS_SCRUB_MOUNTPOINTS="/"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string(none,weekly,monthly)
-## Default:     "monthly"
+## Default:     *
 ## ServiceRestart: btrfsmaintenance-refresh
 #
 # Frequency of periodic scrub.
@@ -97,7 +97,7 @@ BTRFS_SCRUB_MOUNTPOINTS="/"
 # The frequency may be specified using one of the listed values or
 # in the format documented in the "Calendar Events" section of systemd.time(7),
 # if available.
-BTRFS_SCRUB_PERIOD="monthly"
+BTRFS_SCRUB_PERIOD="none"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string(idle,normal)
