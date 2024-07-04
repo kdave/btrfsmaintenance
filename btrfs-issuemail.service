@@ -1,0 +1,7 @@
+[Unit]
+Description=Check for btrfs issues and send an email if any were found
+Documentation=man:btrfs
+
+[Service]
+Type=simple
+ExecStart=/usr/share/btrfsmaintenance/btrfs-issuemail.sh

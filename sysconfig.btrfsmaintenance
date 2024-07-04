@@ -152,3 +152,13 @@ BTRFS_TRIM_MOUNTPOINTS="/"
 # the timer for these tasks(s) elapsed while the system was suspended
 # or powered off.
 BTRFS_ALLOW_CONCURRENCY="false"
+
+## Path:	System/File systems/btrfs
+## Description:	Mail address to send issue reports to
+## Type: 	string
+## Default:	""
+#
+# If this is set to an email address or an username like "root", btrfs device stats
+# data will be checked every hour and an email will be sent to the given address
+# if any issues(like data corruption or read issues) were found.
+BTRFS_MAILADDR=""
