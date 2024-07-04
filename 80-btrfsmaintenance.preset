@@ -1,0 +1,12 @@
+enable btrfsmaintenance-refresh.service
+#enable btrfsmaintenance-refresh.path
+enable btrfs-balance.timer
+enable btrfs-defrag.timer
+enable btrfs-scrub.timer
+enable btrfs-trim.timer
+
+# Services, which are activated by timers, cannot be enabled or disabled
+#enable btrfs-balance.service
+#enable btrfs-defrag.service
+#enable btrfs-scrub.service
+#enable btrfs-trim.service
