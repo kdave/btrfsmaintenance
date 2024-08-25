@@ -46,6 +46,8 @@ __Tuning:__
 * you can turn off the automatic repair (`BTRFS_SCRUB_READ_ONLY`)
 * the default IO priority is set to *idle* but scrub may take long to finish,
   you can change priority to *normal* (`BTRFS_SCRUB_PRIORITY`)
+* If using systemd timers, you can also enable (`BTRFS_IO_LIMIT`) to set IO resource
+* limits
 
 __Related commands:__
 

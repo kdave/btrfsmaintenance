@@ -152,3 +152,39 @@ BTRFS_TRIM_MOUNTPOINTS="/"
 # the timer for these tasks(s) elapsed while the system was suspended
 # or powered off.
 BTRFS_ALLOW_CONCURRENCY="false"
+
+## Path:        System/File systems/btrfs
+## Description:	Configuration to allow limiting bandwidth and IOPS
+## Type: 	boolean
+## Default:	"false"
+# Maintenance tasks may starve system resources for other more urgent
+# workloads. This enables IO resource limits when using systemd timers.
+BTRFS_IO_LIMIT="false"
+
+## Path:        System/File systems/btrfs
+## Description:	Configuration to specify devices with limited bandwidth and/or IOPS
+## Type: 	string
+## Default:	"/dev/sda"
+# With IO resource limits, this setting specifies the block devices that will
+# have resource limits set
+# (Colon separated paths)
+BTRFS_IO_LIMIT_DEVICES="/dev/sda"
+
+## Path:        System/File systems/btrfs
+## Description:	Configuration to specify IOPS limits
+## Type: 	string
+## Default:	"40"
+# With IO resource limits, this setting specifies the per-device IOPS limits.
+# SSDs can typically perform thousands of operations per second while spindles
+# can only perform up to 120 IOPS, though with terrible throughput.
+BTRFS_IO_LIMIT_IOPS="40"
+
+## Path:        System/File systems/btrfs
+## Description:	Configuration to specify disk bandwidth limits
+## Type: 	string
+## Default:	"20M"
+# With IO resource limits, this setting specifies the per-device bandwidth
+# limit. The typical maximum speed of SATA SSDs is about 550MBps limited by
+# the SATA protocol. Current high-end spindle drives' typical maximum speed
+# is about 240MBps.
+BTRFS_IO_LIMIT_BW="20M"

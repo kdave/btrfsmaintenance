@@ -84,6 +84,20 @@ OnCalendar=$PERIOD
 EOF
 			systemctl enable "$SERVICE".timer &> /dev/null
 			systemctl start "$SERVICE".timer &> /dev/null
+			OIFS="$IFS"
+			IFS=:
+      if [ "$BTRFS_IO_LIMIT" = "true" ] ; then
+			  mkdir -p /etc/systemd/system/"$SERVICE".service.d
+				echo '[Service]' > /etc/systemd/system/"$SERVICE".service.d/10-iolimits.conf
+				for DEVICE in $BTRFS_IO_LIMIT_DEVICES ; do
+				  echo "IOReadBandwidthMax=$DEVICE $BTRFS_IO_LIMIT_BW"
+				  echo "IOWriteBandwidthMax=$DEVICE $BTRFS_IO_LIMIT_BW"
+				  echo "IOReadIOPSMax=$DEVICE $BTRFS_IO_LIMIT_IOPS"
+				  echo "IOWriteIOPSMax=$DEVICE $BTRFS_IO_LIMIT_IOPS"
+				done >> /etc/systemd/system/"$SERVICE".service.d/10-iolimits.conf
+				systemctl daemon-reload
+			fi
+			IFS="$OIFS"
 			;;
 	esac
 }

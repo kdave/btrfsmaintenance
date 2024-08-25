@@ -63,6 +63,10 @@ you can turn off the automatic repair (\fB\fCBTRFS\_SCRUB\_READ\_ONLY\fR)
 .IP \(bu 2
 the default IO priority is set to \fIidle\fP but scrub may take long to finish,
 you can change priority to \fInormal\fP (\fB\fCBTRFS\_SCRUB\_PRIORITY\fR)
+.IP \(bu 2
+If using systemd timers, you can also enable (`BTRFS_IO_LIMIT`) to set IO resource
+.IP \(bu 2
+limits
 
 .RE
 
