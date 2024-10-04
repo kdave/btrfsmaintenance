@@ -41,4 +41,6 @@ case "$BTRFS_LOG_OUTPUT" in
 	*) cat;;
 esac
 
-exit 0
+# Capture exit code from the piped command above and return it
+EXIT_STATUS=${PIPESTATUS[0]}
+exit $EXIT_STATUS
