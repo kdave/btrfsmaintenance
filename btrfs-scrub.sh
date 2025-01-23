@@ -49,7 +49,7 @@ for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 		for DEV in $(btrfs filesystem show   "$MNT" |  awk '/ path /{print $NF}')
 		do
 			run_task btrfs scrub start -Bd $ioprio $readonly "$DEV"
-			until btrfs scrub status "$DEV" | grep finished
+			until btrfs scrub status "$DEV" | grep -E '(finished|aborted|interrupted)'
 				do
 					sleep 5
 				done
