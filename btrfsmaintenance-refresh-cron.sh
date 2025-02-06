@@ -11,9 +11,25 @@ export PATH
 
 SCRIPTS=/usr/share/btrfsmaintenance
 
-if [ -f /etc/sysconfig/btrfsmaintenance ]; then
-    . /etc/sysconfig/btrfsmaintenance
-fi
+# here we will try three times (by sleeping 1s) to check if
+# the configuration file exists.
+TRY_TIMES=0
+while [ $TRY_TIMES -lt 3 ]; do
+    if [ ! -f /etc/sysconfig/btrfsmaintenance ]; then
+        sleep 1
+    else
+        break
+    fi
+    ((TRY_TIMES++))
+    if [ $TRY_TIMES -eq 3 ];then
+		echo "Failed to find configuration file /etc/sysconfig/btrfsmaintenance"
+        exit 1
+    else
+        continue
+    fi
+done
+
+. /etc/sysconfig/btrfsmaintenance
 
 if [ -f /etc/default/btrfsmaintenance ]; then
     . /etc/default/btrfsmaintenance
