@@ -52,7 +52,7 @@ BTRFS_BALANCE_MOUNTPOINTS="/"
 # The frequency may be specified using one of the listed values or
 # in the format documented in the "Calendar Events" section of systemd.time(7),
 # if available.
-BTRFS_BALANCE_PERIOD="weekly"
+BTRFS_BALANCE_PERIOD="monthly"
 
 ## Path:        System/File systems/btrfs
 ## Type:        string
