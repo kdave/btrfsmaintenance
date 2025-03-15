@@ -18,6 +18,7 @@ LOGIDENTIFIER='btrfs-defrag'
 . $(dirname $(realpath "$0"))/btrfsmaintenance-functions
 
 {
+BTRFS_DEFRAG_PATHS=$(expand_auto_mountpoint "$BTRFS_DEFRAG_PATHS")
 OIFS="$IFS"
 IFS=:
 exec 2>&1 # redirect stderr to stdout to catch all output to log destination
