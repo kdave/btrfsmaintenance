@@ -14,6 +14,8 @@ BTRFS_LOG_OUTPUT="stdout"
 # cross mount points or other subvolumes/snapshots. If you want to defragment
 # nested subvolumes, all have to be listed in this variable.
 # (Colon separated paths)
+# The special word/mountpoint "auto" will evaluate all mounted btrfs
+# filesystems
 BTRFS_DEFRAG_PATHS=""
 
 ## Path:           System/File systems/btrfs
