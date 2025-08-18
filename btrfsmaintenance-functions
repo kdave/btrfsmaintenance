@@ -16,9 +16,10 @@ expand_auto_mountpoint() {
 		local DEVICE
 		local MNT
 
-		# find all mounted btrfs filesystems, print their device nodes, sort them
-		# and remove identical entries
-		BTRFS_DEVICES=$(findmnt --types btrfs --output "SOURCE" --nofsroot --noheading | sort | uniq)
+		# Find all unique mounted btrfs filesystems. The list is
+		# randomized in case of an early error that would repeatedly
+		# fail to continue to the rest.
+		BTRFS_DEVICES=$(findmnt --types btrfs --output "SOURCE" --nofsroot --noheading | sort -u | shuf)
 		# find one (and only one) corresponding mountpoint for each btrfs device node
 		MNTLIST=""
 		for DEVICE in $BTRFS_DEVICES; do
