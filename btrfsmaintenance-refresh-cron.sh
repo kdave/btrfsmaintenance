@@ -120,4 +120,3 @@ case "$BTRFS_TIMER_IMPLEMENTATION" in
 		refresh_cron "$BTRFS_TRIM_PERIOD" btrfs-trim.sh
 		;;
 esac
-

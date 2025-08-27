@@ -32,7 +32,7 @@ trap cleanup EXIT
 tmpdir=$(mktemp -d /tmp/btrfs-defrag-plugin.XXXXXX)
 
 log() {
-    logger -p info -t $SCRIPTNAME --id=$$ "$@"
+    logger -p info -t "$SCRIPTNAME" --id=$$ "$@"
 }
 
 debug() {
@@ -47,13 +47,13 @@ respond() {
 execute() {
     debug -- "Executing: $@"
 
-    $@ 2> $tmpdir/cmd-output
+    $@ 2> "$tmpdir/cmd-output"
     ret=$?
 
     if $DEBUG; then
         if test $ret -ne 0; then
             log -- "Command failed, output follows:"
-            log -f $tmpdir/cmd-output
+            log -f "$tmpdir/cmd-output"
             log -- "End output"
         else
             log -- "Command succeeded"
@@ -74,9 +74,9 @@ btrfs_defrag() {
 debug_fragmentation() {
     if $DEBUG; then
         log -- "Fragmentation $1"
-        execute filefrag $RPMDIR/* > $tmpdir/filefrag-output
+        execute filefrag "$RPMDIR/"* > $tmpdir/filefrag-output
         if test $? -eq 0; then
-            log -f $tmpdir/filefrag-output
+            log -f "$tmpdir/filefrag-output"
 	    log -- "End output"
         else
             log "Non-fatal error ignored."
@@ -86,7 +86,7 @@ debug_fragmentation() {
 
 ret=0
 
-# The frames are terminated with NUL.  Use that as the delimeter and get
+# The frames are terminated with NUL.  Use that as the delimiter and get
 # the whole frame in one go.
 while IFS= read -r -d $'\0' FRAME; do
     echo ">>" $FRAME | debug
@@ -113,7 +113,7 @@ while IFS= read -r -d $'\0' FRAME; do
     esac
 
     # We don't have anything to do if it's not btrfs.
-    FSTYPE=$(execute stat -f --format=%T $RPMDIR)
+    FSTYPE=$(execute stat -f --format=%T "$RPMDIR")
     if test $? -ne 0; then
         respond "ERROR"
         ret=1
@@ -131,7 +131,7 @@ while IFS= read -r -d $'\0' FRAME; do
 
     debug_fragmentation "before defrag run"
 
-    btrfs_defrag > $tmpdir/defrag-output
+    btrfs_defrag > "$tmpdir/defrag-output"
     if test $? -ne 0; then
         respond "ERROR"
         ret=1
@@ -140,7 +140,7 @@ while IFS= read -r -d $'\0' FRAME; do
 
     # Log the output if we're in debug mode
     debug "Output follows:"
-    debug -f $tmpdir/defrag-output
+    debug -f "$tmpdir/defrag-output"
     debug -- "End output"
 
     debug_fragmentation "after defrag run"

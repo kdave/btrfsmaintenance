@@ -72,4 +72,4 @@ esac
 
 # Capture exit code from the piped command above and return it
 EXIT_STATUS=${PIPESTATUS[0]}
-exit $EXIT_STATUS
+exit "$EXIT_STATUS"
