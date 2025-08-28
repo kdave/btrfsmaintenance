@@ -45,8 +45,8 @@ for MNT in $BTRFS_SCRUB_MOUNTPOINTS; do
 		echo "RAID level is not 5 or 6, parallel device scrubbing"
 		run_task btrfs scrub start -Bd $ioprio $readonly "$MNT"
 	else
-		echo "RAID level is 5 or 6, sequential device scrubbing"
-		for DEV in $(btrfs filesystem show   "$MNT" |  awk '/ path /{print $NF}')
+		echo "RAID level is 5 or 6, sequential device scrubbing (randomized order)"
+		for DEV in $(btrfs filesystem show "$MNT" | awk '/ path /{print $NF}' | shuf)
 		do
 			run_task btrfs scrub start -Bd $ioprio $readonly "$DEV"
 			until btrfs scrub status "$DEV" | grep -E '(finished|aborted|interrupted)'
